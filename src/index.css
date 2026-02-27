@@ -1,0 +1,127 @@
+:root {
+  font-family: 'Inter', 'Poppins', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  /* === DARK JEWEL TONE PALETTE FOR MATCH SCHEDULE === */
+  
+  /* Primary Backgrounds - Deep, muted jewel tones */
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #263549;
+  --bg-hover: #334155;
+  
+  /* Schedule Section - Deep jewel tones */
+  --schedule-bg: #0d1b2a;           /* Deep navy-slate */
+  --schedule-card: #1a2639;         /* Rich midnight blue */
+  --schedule-card-hover: #223548;   /* Slightly lighter for hover */
+  --schedule-border: #2d3e52;       /* Muted blue-gray border */
+  
+  /* League Headers - Jewel accents */
+  --league-header-bg: #1a2f42;      /* Deep teal-blue */
+  --league-header-text: #4dd9d4;    /* Bright cyan-teal */
+  --league-accent-1: #2d5f7f;       /* Deep sapphire */
+  --league-accent-2: #3d4a6f;       /* Muted indigo */
+  
+  /* Tab Navigation */
+  --tab-inactive-bg: #192534;       /* Deep dark blue */
+  --tab-inactive-text: #8899aa;     /* Muted blue-gray */
+  --tab-active-bg: #1e4d5c;         /* Deep teal */
+  --tab-active-border: #4dd9d4;     /* Bright teal */
+  
+  /* Text Colors - High contrast on dark */
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-on-jewel: #e0f2fe;         /* Light blue on jewel tones */
+  --accent-text: #60a5fa;
+
+  /* Match Status Indicators - High contrast */
+  --status-live: #ff3d4a;           /* Bright red */
+  --status-finished: #22c55e;       /* Bright green */
+  --status-upcoming: #6b7280;       /* Muted gray */
+  --status-live-glow: rgba(255, 61, 74, 0.2);
+  
+  /* Time Indicators */
+  --time-indicator: #8b5cf6;        /* Bright purple */
+  --time-bg: #3730a3;               /* Deep indigo */
+  
+  /* Team Colors & Match Cards */
+  --team-home-accent: #60a5fa;      /* Light blue */
+  --team-away-accent: #34d399;      /* Light teal */
+  --match-separator: rgba(77, 217, 212, 0.1);
+  
+  /* UI Elements */
+  --btn-primary: #3b82f6;
+  --btn-primary-hover: #2563eb;
+  --btn-secondary: #475569;
+  --btn-secondary-hover: #64748b;
+  
+  /* Legacy status indicators */
+  --live-indicator: #ff3d4a;
+  --league-header: #0ea5e9;
+  --team-color: #f1f5f9;
+  --match-time: #c4b5fd;
+
+  color-scheme: dark;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: var(--accent-text);
+  text-decoration: inherit;
+}
+
+a:hover {
+  color: #06b6d4;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  height: 100%;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+#root {
+  width: 100%;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+button:hover {
+  background-color: var(--bg-hover);
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto var(--accent-text);
+}

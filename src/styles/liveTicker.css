@@ -1,0 +1,112 @@
+.live-ticker{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.ticker-header{
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(14, 165, 233, 0.05);
+}
+
+.live-indicator{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--status-live);
+}
+
+.live-dot{
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--status-live);
+  animation: pulse 1.5s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes pulse{
+  0%, 100%{ opacity: 1; }
+  50%{ opacity: 0.5; }
+}
+
+.ticker-scroll{
+  max-height: 200px;
+  overflow-y: auto;
+  animation: scrollTicker 12s linear infinite;
+}
+
+@keyframes scrollTicker{
+  0%{ transform: translateY(0); }
+  100%{ transform: translateY(-100%); }
+}
+
+.ticker-item{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(52, 65, 84, 0.5);
+  transition: background 0.2s ease;
+}
+
+.ticker-item:hover{
+  background: rgba(14, 165, 233, 0.05);
+}
+
+.ticker-item:last-child{
+  border-bottom: none;
+}
+
+.action-icon{
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.event-details{
+  flex: 1;
+  min-width: 0;
+}
+
+.event-match{
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.event-info{
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+/* Scrollbar styling */
+.ticker-scroll::-webkit-scrollbar{
+  width: 4px;
+}
+
+.ticker-scroll::-webkit-scrollbar-track{
+  background: transparent;
+}
+
+.ticker-scroll::-webkit-scrollbar-thumb{
+  background: rgba(14, 165, 233, 0.3);
+  border-radius: 2px;
+}
+
+.ticker-scroll::-webkit-scrollbar-thumb:hover{
+  background: rgba(14, 165, 233, 0.5);
+}
