@@ -3,65 +3,72 @@
   line-height: 1.5;
   font-weight: 400;
 
-  /* === DARK JEWEL TONE PALETTE FOR MATCH SCHEDULE === */
+  /* === UNIFIED DARK THEME PALETTE === */
   
-  /* Primary Backgrounds - Deep, muted jewel tones */
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-tertiary: #263549;
-  --bg-hover: #334155;
+  /* Primary Backgrounds - Midnight to Dark Gray */
+  --bg-primary: #111827;            /* Midnight */
+  --bg-secondary: #1f2937;          /* Dark Gray */
+  --bg-tertiary: #374151;           /* Darker Gray */
+  --bg-hover: #4b5563;              /* Hover state */
   
-  /* Schedule Section - Deep jewel tones */
-  --schedule-bg: #0d1b2a;           /* Deep navy-slate */
-  --schedule-card: #1a2639;         /* Rich midnight blue */
-  --schedule-card-hover: #223548;   /* Slightly lighter for hover */
-  --schedule-border: #2d3e52;       /* Muted blue-gray border */
+  /* Schedule Section - Consistent dark theme */
+  --schedule-bg: #111827;           /* Midnight */
+  --schedule-card: #1f2937;         /* Dark Gray */
+  --schedule-card-hover: #2d3748;   /* Slightly lighter for hover */
+  --schedule-border: #374151;       /* Darker Gray border */
   
-  /* League Headers - Jewel accents */
-  --league-header-bg: #1a2f42;      /* Deep teal-blue */
-  --league-header-text: #4dd9d4;    /* Bright cyan-teal */
-  --league-accent-1: #2d5f7f;       /* Deep sapphire */
-  --league-accent-2: #3d4a6f;       /* Muted indigo */
+  /* League Headers - Green accent */
+  --league-header-bg: #1f2937;      /* Dark Gray */
+  --league-header-text: #22c55e;    /* Green accent */
+  --league-header: #22c55e;         /* Green accent (backward compatibility) */
+  --league-accent-1: #3b82f6;       /* Blue */
+  --league-accent-2: #ef4444;       /* Red */
   
   /* Tab Navigation */
-  --tab-inactive-bg: #192534;       /* Deep dark blue */
-  --tab-inactive-text: #8899aa;     /* Muted blue-gray */
-  --tab-active-bg: #1e4d5c;         /* Deep teal */
-  --tab-active-border: #4dd9d4;     /* Bright teal */
+  --tab-inactive-bg: #1f2937;       /* Dark Gray */
+  --tab-inactive-text: #9ca3af;     /* Muted */
+  --tab-active-bg: #22c55e;         /* Green */
+  --tab-active-border: #22c55e;     /* Green */
   
   /* Text Colors - High contrast on dark */
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
-  --text-on-jewel: #e0f2fe;         /* Light blue on jewel tones */
-  --accent-text: #60a5fa;
+  --text-primary: #f9fafb;          /* Light White */
+  --text-secondary: #d1d5db;        /* Light Gray */
+  --text-muted: #9ca3af;            /* Muted Gray */
+  --text-on-dark: #f9fafb;          /* Light White on dark */
+  --accent-text: #3b82f6;           /* Blue */
 
-  /* Match Status Indicators - High contrast */
-  --status-live: #ff3d4a;           /* Bright red */
-  --status-finished: #22c55e;       /* Bright green */
-  --status-upcoming: #6b7280;       /* Muted gray */
-  --status-live-glow: rgba(255, 61, 74, 0.2);
+  /* Match Status Indicators */
+  --status-live: #ef4444;           /* Red */
+  --status-finished: #22c55e;       /* Green */
+  --status-upcoming: #9ca3af;       /* Muted Gray */
+  --status-live-glow: rgba(239, 68, 68, 0.2);
   
   /* Time Indicators */
-  --time-indicator: #8b5cf6;        /* Bright purple */
-  --time-bg: #3730a3;               /* Deep indigo */
+  --time-indicator: #22c55e;        /* Green */
+  --time-bg: #1f2937;               /* Dark Gray */
   
   /* Team Colors & Match Cards */
-  --team-home-accent: #60a5fa;      /* Light blue */
-  --team-away-accent: #34d399;      /* Light teal */
-  --match-separator: rgba(77, 217, 212, 0.1);
+  --team-home-accent: #3b82f6;      /* Blue */
+  --team-away-accent: #ef4444;      /* Red */
+  --match-separator: rgba(34, 197, 94, 0.1);
   
   /* UI Elements */
-  --btn-primary: #3b82f6;
-  --btn-primary-hover: #2563eb;
-  --btn-secondary: #475569;
-  --btn-secondary-hover: #64748b;
+  --btn-primary: #3b82f6;           /* Blue */
+  --btn-primary-hover: #2563eb;     /* Darker Blue */
+  --btn-secondary: #374151;         /* Darker Gray */
+  --btn-secondary-hover: #4b5563;   /* Hover Gray */
+  --accent-blue: #3b82f6;           /* Blue (backward compatibility) */
   
-  /* Legacy status indicators */
-  --live-indicator: #ff3d4a;
-  --league-header: #0ea5e9;
-  --team-color: #f1f5f9;
-  --match-time: #c4b5fd;
+  /* Event Status Indicators */
+  --event-goal: #22c55e;            /* Green */
+  --event-yellow: #facc15;          /* Yellow */
+  --event-red: #ef4444;             /* Red */
+  --event-sub: #3b82f6;             /* Blue */
+  
+  /* Legacy/Shorthand Variables (backward compatibility) */
+  --card: #1f2937;                  /* Card background (dark gray) */
+  --border: #374151;                /* Border color (darker gray) */
+  --text: #f9fafb;                  /* Text primary (light white) */
 
   color-scheme: dark;
   color: var(--text-primary);
@@ -80,7 +87,7 @@ a {
 }
 
 a:hover {
-  color: #06b6d4;
+  color: #22c55e;
 }
 
 html {
@@ -114,14 +121,50 @@ button {
   background-color: var(--bg-secondary);
   color: var(--text-primary);
   cursor: pointer;
-  transition: all 0.25s;
+  transition: all 0.25s ease;
 }
 
 button:hover {
   background-color: var(--bg-hover);
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
 }
 
 button:focus,
 button:focus-visible {
   outline: 4px auto var(--accent-text);
+}
+
+/* === Global animation keyframes === */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Smooth page-level content entrance */
+.content {
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* All cards and containers get smooth hover transitions */
+* {
+  -webkit-tap-highlight-color: transparent;
 }

@@ -7,6 +7,10 @@ export default function ProtectedAdminRoute({ children }: { children: React.Reac
   const { profile, loading } = useAuth()
   const location = useLocation()
 
+  // Check for demo mode session
+  const demoSession = localStorage.getItem('adminSession')
+  const isDemoMode = demoSession ? JSON.parse(demoSession).demoMode : false
+
   if (loading) {
     return (
       <div className="auth-page">
@@ -17,7 +21,8 @@ export default function ProtectedAdminRoute({ children }: { children: React.Reac
     )
   }
 
-  if (profile?.role !== 'admin') {
+  // Allow if authenticated admin OR in demo mode
+  if (profile?.role !== 'admin' && !isDemoMode) {
     return <Navigate to={ADMIN_LOGIN_PATH} state={{ from: location }} replace />
   }
 

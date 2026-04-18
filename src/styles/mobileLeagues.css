@@ -1,0 +1,84 @@
+/* Mobile Leagues - shown only on mobile, below the matches */
+
+.mobile-leagues {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .mobile-leagues {
+    display: block;
+    margin-top: 24px;
+    padding: 0 4px;
+  }
+
+  .mobile-leagues-section {
+    background: var(--bg-secondary, #1e293b);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(203, 213, 225, 0.08);
+    animation: fadeInUp 0.4s ease-out both;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .mobile-leagues-section:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .mobile-leagues-title {
+    margin: 0 0 12px 0;
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--league-header, #60a5fa);
+    letter-spacing: 1px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--league-header, #60a5fa);
+  }
+
+  .mobile-leagues-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .mobile-league-item {
+    display: block;
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: var(--text-primary, #f1f5f9);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+  }
+
+  .mobile-league-item:active {
+    background: rgba(59, 130, 246, 0.18);
+    border-left-color: var(--accent-text, #60a5fa);
+    transform: scale(0.98);
+  }
+
+  .mobile-country-group {
+    margin-top: 10px;
+  }
+
+  .mobile-country-name {
+    padding: 6px 8px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--text-muted, #94a3b8);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.15);
+    margin-bottom: 4px;
+  }
+
+  .mobile-country-group .mobile-league-item {
+    font-size: 0.86rem;
+    font-weight: 500;
+    padding: 8px 12px;
+  }
+}

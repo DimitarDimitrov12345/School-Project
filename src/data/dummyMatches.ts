@@ -3,49 +3,27 @@ import type { Match } from '../types'
 export const matches: Match[] = [
   {
     id: '1',
+    home: { name: 'Manchester United' },
+    away: { name: 'Liverpool' },
+    time: '15:00',
     league: 'Premier League',
-    time: '14:00',
-    status: 'Upcoming',
-    isToday: true,
-    home: { name: 'Arsenal', code: 'ARS', emoji: '🔴' },
-    away: { name: 'Chelsea', code: 'CHE', emoji: '🔵' },
-    odds: '1.8',
+    status: 'Live'
   },
   {
     id: '2',
+    home: { name: 'Arsenal' },
+    away: { name: 'Chelsea' },
+    time: '17:30',
     league: 'Premier League',
-    time: '16:30',
-    status: 'Live',
-    isToday: true,
-    home: { name: 'Manchester United', code: 'MUN', emoji: '🔴' },
-    away: { name: 'Liverpool', code: 'LIV', emoji: '🔵' },
+    status: 'Upcoming'
   },
   {
     id: '3',
-    league: 'La Liga',
-    time: '18:00',
-    status: 'Upcoming',
-    isToday: false,
-    home: { name: 'Real Madrid', code: 'RMA', emoji: '⚪' },
-    away: { name: 'Barcelona', code: 'BAR', emoji: '🔵' },
-    odds: '2.1',
-  },
-  {
-    id: '4',
-    league: 'Serie A',
+    home: { name: 'Real Madrid' },
+    away: { name: 'Barcelona' },
     time: '20:45',
-    status: 'Upcoming',
-    isToday: false,
-    home: { name: 'Juventus', code: 'JUV', emoji: '⚪' },
-    away: { name: 'AC Milan', code: 'MIL', emoji: '⚫' },
-  },
-  {
-    id: '5',
-    league: 'Bundesliga',
-    time: '13:30',
-    status: 'Finished',
-    isToday: true,
-    home: { name: 'Bayern', code: 'BAY', emoji: '🔴' },
-    away: { name: 'Dortmund', code: 'DOR', emoji: '⚫' },
-  },
+    league: 'La Liga',
+    status: 'Live'
+  }
 ]
+

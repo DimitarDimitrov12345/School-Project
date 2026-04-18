@@ -52,7 +52,7 @@ const LiveTicker: React.FC<LiveTickerProps> = ({ events = sampleEvents }) => {
       <div className="ticker-header">
         <div className="live-indicator">
           <span className="live-dot"></span>
-          <span className="live-text">LIVE UPDATES</span>
+          <span className="live-text">НА ЖИВО</span>
         </div>
       </div>
 

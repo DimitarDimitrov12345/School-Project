@@ -35,16 +35,12 @@ const Navbar: React.FC<Props> = () => {
 
       <div className="right">
         {loading ? (
-          <span className="navbar-date">Loading…</span>
+          <span className="navbar-date">Зареждане…</span>
         ) : !isLoggedIn ? (
           <>
             <div className="auth-buttons">
-              <Link to="/login">
-                <button className="btn-login">Log In</button>
-              </Link>
-              <Link to="/signup">
-                <button className="btn-signup">Sign Up</button>
-              </Link>
+              <Link to="/login" className="btn-login">Вход</Link>
+              <Link to="/signup" className="btn-signup">Регистрация</Link>
             </div>
             {showLoginOnlyImage && (
               <div className="navbar-image">
@@ -63,7 +59,8 @@ const Navbar: React.FC<Props> = () => {
               >
                 <div className="profile-avatar">👤</div>
                 <span className="user-name">{profile.username ?? profile.email?.split('@')[0]}</span>
-                <span className="user-role-badge">{profile.role}</span>
+                {isAdmin && <span className="user-role-badge">admin</span>}
+                <span className="profile-chevron">{profileMenuOpen ? '▲' : '▼'}</span>
               </button>
 
               <button
@@ -74,7 +71,7 @@ const Navbar: React.FC<Props> = () => {
                 aria-label="Log out"
                 title="Log out"
               >
-                Log out
+                Изход
               </button>
 
               {profileMenuOpen && (
@@ -82,20 +79,20 @@ const Navbar: React.FC<Props> = () => {
                 {profile.role === 'user' && (
                   <>
                     <Link to="/" className="menu-item" onClick={() => setProfileMenuOpen(false)}>
-                      👤 My Profile
+                      👤 Моят профил
                     </Link>
                     <a href="#predictions" className="menu-item">
-                      🎯 My Predictions
+                      🎯 Моите прогнози
                     </a>
                     <a href="#favorites" className="menu-item">
-                      ⭐ Favorites
+                      ⭐ Любими
                     </a>
                     <a href="#settings" className="menu-item">
-                      ⚙️ Settings
+                      ⚙️ Настройки
                     </a>
                     <div className="menu-divider" />
                     <button className="menu-item danger" onClick={handleLogout}>
-                      🚪 Log Out
+                      🚪 Изход
                     </button>
                   </>
                 )}
@@ -107,26 +104,26 @@ const Navbar: React.FC<Props> = () => {
                       className="menu-item"
                       onClick={() => setProfileMenuOpen(false)}
                     >
-                      📊 Admin Dashboard
+                      📊 Администраторски панел
                     </Link>
                     <a href="#leagues" className="menu-item">
-                      🏆 Manage Leagues
+                      🏆 Управление на лиги
                     </a>
                     <a href="#matches" className="menu-item">
-                      ⚽ Manage Matches
+                      ⚽ Управление на мачове
                     </a>
                     <a href="#users" className="menu-item">
-                      👥 Users
+                      👥 Потребители
                     </a>
                     <a href="#reports" className="menu-item">
-                      📈 Reports
+                      📈 Отчети
                     </a>
                     <a href="#settings" className="menu-item">
-                      ⚙️ Settings
+                      ⚙️ Настройки
                     </a>
                     <div className="menu-divider" />
                     <button className="menu-item danger" onClick={handleLogout}>
-                      🚪 Log Out
+                      🚪 Изход
                     </button>
                   </>
                 )}

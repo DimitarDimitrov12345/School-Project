@@ -1,0 +1,163 @@
+.gw-container {
+  width: 100%;
+  background: #0d1b2a;
+  color: #e2e8f0;
+  font-family: 'Raleway', sans-serif;
+  font-size: 13px;
+}
+
+.gw-loading, .gw-empty {
+  text-align: center;
+  padding: 32px 16px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.gw-toolbar {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding: 8px 0 12px;
+  border-bottom: 1px solid rgba(1, 208, 153, 0.2);
+  margin-bottom: 8px;
+}
+
+.gw-filter-btn {
+  background: transparent;
+  border: 1px solid #334155;
+  color: #94a3b8;
+  padding: 5px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.gw-filter-btn.active {
+  background: #01d099;
+  color: #0d1b2a;
+  border-color: #01d099;
+}
+
+.gw-filter-btn:hover:not(.active) {
+  border-color: #01d099;
+  color: #e2e8f0;
+}
+
+.gw-league {
+  margin-bottom: 4px;
+}
+
+.gw-league-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: #1a2744;
+  font-weight: 600;
+  font-size: 12px;
+  color: #94a3b8;
+  border-left: 3px solid #01d099;
+}
+
+.gw-flag {
+  width: 16px;
+  height: 12px;
+  object-fit: cover;
+  border-radius: 1px;
+}
+
+.gw-match {
+  display: grid;
+  grid-template-columns: 50px 1fr 36px 36px;
+  align-items: center;
+  padding: 6px 10px;
+  border-bottom: 1px solid #1e293b;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.gw-match:hover {
+  background: #1e293b;
+}
+
+.gw-status {
+  font-size: 12px;
+  text-align: center;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.gw-status.gw-live {
+  color: #ef4444;
+  animation: gw-pulse 1.5s ease infinite;
+}
+
+.gw-status.gw-break {
+  color: #f59e0b;
+}
+
+.gw-status.gw-finished {
+  color: #64748b;
+}
+
+@keyframes gw-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.gw-teams {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.gw-team {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px;
+}
+
+.gw-logo {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.gw-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: 700;
+  font-size: 13px;
+  gap: 2px;
+}
+
+.gw-score.gw-live {
+  color: #ef4444;
+}
+
+.gw-ht {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 11px;
+  color: #64748b;
+  gap: 2px;
+}
+
+@media (max-width: 480px) {
+  .gw-match {
+    grid-template-columns: 42px 1fr 30px 30px;
+    padding: 5px 6px;
+  }
+  .gw-team { font-size: 12px; }
+  .gw-filter-btn { padding: 4px 10px; font-size: 11px; }
+}

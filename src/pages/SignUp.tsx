@@ -26,21 +26,21 @@ export default function SignUp() {
     setError('')
     setMessage('')
     if (password !== confirmPassword) {
-      setError('Passwords do not match')
+      setError('Паролите не съвпадат')
       return
     }
     if (password.length < 6) {
-      setError('Password must be at least 6 characters')
+      setError('Паролата трябва да е поне 6 символа')
       return
     }
     setLoading(true)
-    const { error: err } = await signUp(email, password, username)
+    const { error: err } = await signUp(email, password, username, 'user')
     setLoading(false)
     if (err) {
       setError(err.message || 'Failed to sign up')
       return
     }
-    setMessage('Check your email to confirm your account, then log in.')
+    setMessage('Проверете имейла си за потвърждение, след което влезте.')
     setTimeout(() => navigate('/login', { replace: true }), 2000)
   }
 
@@ -55,19 +55,19 @@ export default function SignUp() {
         >
           ✕
         </button>
-        <h1 className="auth-title">Sign up</h1>
-        <p className="auth-subtitle">Create an account (as user)</p>
+        <h1 className="auth-title">Регистрация</h1>
+        <p className="auth-subtitle">Създайте акаунт</p>
         <form onSubmit={handleSubmit} className="auth-form">
           {error && <div className="auth-error">{error}</div>}
           {message && <div className="auth-message">{message}</div>}
           <label className="auth-label">
-            Username
+            Потребителско име
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="auth-input"
-              placeholder="choose a username"
+              placeholder="изберете потребителско име"
               required
               minLength={3}
               maxLength={32}
@@ -75,32 +75,32 @@ export default function SignUp() {
             />
           </label>
           <label className="auth-label">
-            Email
+            Имейл
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="auth-input"
-              placeholder="you@example.com"
+              placeholder="вашият@имейл.com"
               required
               autoComplete="email"
             />
           </label>
           <label className="auth-label">
-            Password
+            Парола
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="auth-input"
-              placeholder="At least 6 characters"
+              placeholder="Поне 6 символа"
               required
               minLength={6}
               autoComplete="new-password"
             />
           </label>
           <label className="auth-label">
-            Confirm password
+            Потвърди паролата
             <input
               type="password"
               value={confirmPassword}
@@ -113,11 +113,11 @@ export default function SignUp() {
             />
           </label>
           <button type="submit" className="auth-submit" disabled={loading}>
-            {loading ? 'Creating account…' : 'Sign up'}
+            {loading ? 'Създаване…' : 'Регистрация'}
           </button>
         </form>
         <p className="auth-footer">
-          Already have an account? <Link to="/login">Log in</Link>
+          Вече имате акаунт? <Link to="/login">Вход</Link>
         </p>
       </div>
     </div>

@@ -42,24 +42,24 @@ export default function Login() {
         >
           ✕
         </button>
-        <h1 className="auth-title">Log in</h1>
-        <p className="auth-subtitle">Sign in to your account</p>
+        <h1 className="auth-title">Вход</h1>
+        <p className="auth-subtitle">Влезте в акаунта си</p>
         <form onSubmit={handleSubmit} className="auth-form">
           {error && <div className="auth-error">{error}</div>}
           <label className="auth-label">
-            Email or username
+            Имейл или потребителско име
             <input
               type="text"
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
               className="auth-input"
-              placeholder="you@example.com or username"
+              placeholder="вашият@имейл.com или потр. име"
               required
               autoComplete="username"
             />
           </label>
           <label className="auth-label">
-            Password
+            Парола
             <input
               type="password"
               value={password}
@@ -71,11 +71,11 @@ export default function Login() {
             />
           </label>
           <button type="submit" className="auth-submit" disabled={loading}>
-            {loading ? 'Signing in…' : 'Log in'}
+            {loading ? 'Влизане…' : 'Вход'}
           </button>
         </form>
         <p className="auth-footer">
-          Don't have an account? <Link to="/signup">Sign up</Link>
+          Нямате акаунт? <Link to="/signup">Регистрация</Link>
         </p>
       </div>
     </div>

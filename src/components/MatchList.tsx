@@ -15,10 +15,28 @@ const groupByLeague = (matches: Match[]) => {
   return map
 }
 
+const TOP_LEAGUES = [
+  'UEFA Champions League',
+  'UEFA Europa League',
+  'UEFA Europa Conference League',
+  'Premier League',
+  'La Liga',
+  'Serie A',
+  'Bundesliga',
+  'Ligue 1',
+]
+
 const MatchList: React.FC<Props> = ({ matches }) => {
   const grouped = groupByLeague(matches)
 
-  const leagueEntries = Object.entries(grouped)
+  const leagueEntries = Object.entries(grouped).sort(([a], [b]) => {
+    const aIdx = TOP_LEAGUES.findIndex(l => a.includes(l))
+    const bIdx = TOP_LEAGUES.findIndex(l => b.includes(l))
+    if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx
+    if (aIdx !== -1) return -1
+    if (bIdx !== -1) return 1
+    return 0
+  })
 
   return (
     <div className="match-list">

@@ -1,97 +1,189 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import '../styles/featuredMatch.css'
 
-interface FeaturedMatchProps {
-  homeTeam: string
-  awayTeam: string
-  league: string
-  time: string
-  homeScore?: number
-  awayScore?: number
-  status: 'Upcoming' | 'Live' | 'Finished'
+interface Fixture {
+  fixture: {
+    id: number
+    date: string
+    timestamp: number
+    status: {
+      short: string
+      long: string
+    }
+  }
+  league: {
+    id: number
+    name: string
+    country: string
+  }
+  teams: {
+    home: {
+      id: number
+      name: string
+      logo: string
+    }
+    away: {
+      id: number
+      name: string
+      logo: string
+    }
+  }
+  goals: {
+    home: number | null
+    away: number | null
+  }
+  score: {
+    halftime: {
+      home: number | null
+      away: number | null
+    }
+  }
 }
 
-const FeaturedMatch: React.FC<FeaturedMatchProps> = ({
-  homeTeam,
-  awayTeam,
-  league,
-  time,
-  homeScore,
-  awayScore,
-  status,
-}) => {
+const FeaturedMatch: React.FC = () => {
+  const navigate = useNavigate()
+  const [fixture, setFixture] = useState<Fixture | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [timeRemaining, setTimeRemaining] = useState<string>('')
 
   useEffect(() => {
-    if (status !== 'Upcoming') return
+    fetchRandomFixture()
+    
+    // Listen for fixture selection from admin
+    const handleFixtureSelected = (e: CustomEvent) => {
+      setFixture(e.detail)
+    }
+    
+    window.addEventListener('fixtureSelected' as any, handleFixtureSelected)
+    return () => window.removeEventListener('fixtureSelected' as any, handleFixtureSelected)
+  }, [])
+
+  const fetchRandomFixture = async () => {
+    try {
+      const response = await fetch('/api/fixture-random')
+      const data = await response.json()
+      
+      if (data.success && data.fixture) {
+        setFixture(data.fixture)
+      } else {
+        setError('Мачът не е намерен')
+      }
+    } catch (err) {
+      console.error('Error fetching fixture:', err)
+      setError('Неуспешно зареждане на мача')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (!fixture) return
 
     const updateTimer = () => {
-      const now = new Date()
-      const [hours, minutes] = time.split(':').map(Number)
-      const matchTime = new Date()
-      matchTime.setHours(hours, minutes, 0)
+      const now = new Date().getTime()
+      const matchTime = fixture.fixture.timestamp * 1000
+      const diff = matchTime - now
 
-      if (matchTime < now) {
-        matchTime.setDate(matchTime.getDate() + 1)
+      if (diff <= 0) {
+        setTimeRemaining('Live')
+        return
       }
 
-      const diff = matchTime.getTime() - now.getTime()
-      const h = Math.floor(diff / (1000 * 60 * 60))
-      const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+      const hours = Math.floor(diff / (1000 * 60 * 60))
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
 
-      setTimeRemaining(`${h}h ${m}m`)
+      setTimeRemaining(`${hours}h ${minutes}m`)
     }
 
     updateTimer()
     const interval = setInterval(updateTimer, 60000)
     return () => clearInterval(interval)
-  }, [status, time])
+  }, [fixture])
+
+  const getStatusColor = (status: string) => {
+    if (['LIVE', '1H', '2H', 'ET', 'P'].includes(status)) return 'live'
+    if (['FT', 'AET', 'PEN'].includes(status)) return 'finished'
+    return 'upcoming'
+  }
+
+  if (loading) {
+    return (
+      <div className="featured-match">
+        <div style={{ padding: '20px', textAlign: 'center' }}>Зареждане...</div>
+      </div>
+    )
+  }
+
+  if (error || !fixture) {
+    return (
+      <div className="featured-match">
+        <div style={{ padding: '20px', textAlign: 'center', color: '#999' }}>
+          {error || 'Няма наличен мач'}
+        </div>
+      </div>
+    )
+  }
+
+  const statusColor = getStatusColor(fixture.fixture.status.short)
 
   return (
     <div className="featured-match">
       <div className="featured-header">
-        <h3>Match of the Day</h3>
-        <span className={`status-badge status-${status.toLowerCase()}`}>
-          {status}
+        <h3>Мач на деня</h3>
+        <span className={`status-badge status-${statusColor}`}>
+          {fixture.fixture.status.short}
         </span>
       </div>
 
-      <div className="featured-league">{league}</div>
+      <div className="featured-league">{fixture.league.country}: {fixture.league.name}</div>
 
       <div className="featured-content">
         <div className="team home-team">
-          <div className="team-emoji">⚽</div>
-          <div className="team-name">{homeTeam}</div>
+          {fixture.teams.home.logo && (
+            <img src={fixture.teams.home.logo} alt={fixture.teams.home.name} className="team-logo" />
+          )}
+          <div className="team-name">{fixture.teams.home.name}</div>
         </div>
 
         <div className="match-info">
-          {status === 'Live' ? (
-            <div className="score">
-              <span className="score-number">{homeScore}</span>
-              <span className="score-separator">-</span>
-              <span className="score-number">{awayScore}</span>
-            </div>
-          ) : status === 'Finished' ? (
-            <div className="score">
-              <span className="score-number">{homeScore}</span>
-              <span className="score-separator">-</span>
-              <span className="score-number">{awayScore}</span>
-            </div>
-          ) : (
+          <div className="score">
+            <span className="score-number">{fixture.goals.home ?? '-'}</span>
+            <span className="score-separator">-</span>
+            <span className="score-number">{fixture.goals.away ?? '-'}</span>
+          </div>
+          {['NS', 'TBD', 'PST'].includes(fixture.fixture.status.short) && (
             <div className="time-info">
-              <div className="match-time">{time}</div>
               <div className="countdown">{timeRemaining}</div>
             </div>
           )}
         </div>
 
         <div className="team away-team">
-          <div className="team-emoji">⚽</div>
-          <div className="team-name">{awayTeam}</div>
+          {fixture.teams.away.logo && (
+            <img src={fixture.teams.away.logo} alt={fixture.teams.away.name} className="team-logo" />
+          )}
+          <div className="team-name">{fixture.teams.away.name}</div>
         </div>
       </div>
 
-      <button className="watch-btn">Watch Stats</button>
+      <button className="watch-btn" onClick={fetchRandomFixture}>
+        🔄 Следващ мач
+      </button>
+      
+      {fixture && (
+        <button 
+          className="watch-btn" 
+          onClick={() => {
+            localStorage.setItem('selectedFixture', JSON.stringify(fixture))
+            navigate(`/game/${fixture.fixture.id}`)
+          }}
+          style={{ marginTop: '8px', background: '#4caf50' }}
+        >
+          📊 Виж статистика
+        </button>
+      )}
     </div>
   )
 }

@@ -8,13 +8,10 @@ interface Props {
 }
 
 const Sidebar: React.FC<Props> = ({ open = true, onClose }) => {
-  // Fetch leagues from API (or use defaults)
-  // To use an API, pass apiUrl option: useLeagues({ apiUrl: 'https://your-api.com/leagues' })
   const { leagues } = useLeagues()
 
   // Separate top 5 leagues
   const topLeagues = leagues.filter(league => league.tier === 'top')
-  
   // Group other leagues by country
   const otherLeagues = leagues.filter(league => league.tier === 'other')
   const leaguesByCountry = otherLeagues.reduce((acc, league) => {
@@ -24,7 +21,6 @@ const Sidebar: React.FC<Props> = ({ open = true, onClose }) => {
     acc[league.country].push(league)
     return acc
   }, {} as Record<string, typeof otherLeagues>)
-
   // Sort countries alphabetically
   const sortedCountries = Object.keys(leaguesByCountry).sort()
 
@@ -43,7 +39,7 @@ const Sidebar: React.FC<Props> = ({ open = true, onClose }) => {
       <div className="sidebar-top-spacer" />
 
       <div className="leagues-section">
-        <div className="leagues-section-title">Top 5 Leagues</div>
+        <div className="leagues-section-title">Топ 5 Лиги</div>
         <ul className="leagues-list">
           {topLeagues.map((league) => (
             <li key={league.id}>
@@ -56,7 +52,7 @@ const Sidebar: React.FC<Props> = ({ open = true, onClose }) => {
       </div>
 
       <div className="countries-section">
-        <div className="leagues-section-title">Countries</div>
+        <div className="leagues-section-title">Държави</div>
         {sortedCountries.map((country) => (
           <div key={country} className="country-group">
             <div className="country-name">{country}</div>

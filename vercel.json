@@ -1,0 +1,11 @@
+{
+  "rewrites": [
+    { "source": "/api/fixture-random", "destination": "/api/fixture-random" },
+    { "source": "/api/fixture", "destination": "/api/fixture" },
+    { "source": "/api/download-fixture", "destination": "/api/download-fixture" },
+    { "source": "/api/save-fixtures", "destination": "/api/save-fixtures" },
+    { "source": "/api/save-all-fixtures", "destination": "/api/save-all-fixtures" },
+    { "source": "/api/delete-all-fixtures", "destination": "/api/delete-all-fixtures" },
+    { "source": "/((?!api|games|saved-fixtures|widgets|fixtures).*)", "destination": "/index.html" }
+  ]
+}

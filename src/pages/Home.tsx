@@ -1,38 +1,39 @@
 import React, { useState } from 'react'
-import MatchList from '../components/MatchList'
-import { matches } from '../data/dummyMatches'
+import GamesWidget from '../components/GamesWidget'
 import '../styles/schedule.css'
 
-const tabs = ['TODAY', 'TOMORROW', 'YESTERDAY'] as const
+const tabs = ['ДНЕС', 'УТРЕ', 'ВЧЕРА'] as const
 
 type Tab = typeof tabs[number]
 
 const Home: React.FC = () => {
-  const [active, setActive] = useState<Tab>('TODAY')
+  const [active, setActive] = useState<Tab>('ДНЕС');
 
-  // simple tab filtering (dummyDates via isToday for demo)
-  const today = matches.filter((m) => m.isToday)
-  const upcoming = matches.filter((m) => !m.isToday)
-
-  const getMatchesForTab = (tab: Tab) => {
+  // Calculate the date based on the active tab
+  const getDisplayDate = (tab: Tab): Date => {
+    const today = new Date()
     switch (tab) {
-      case 'TODAY':
+      case 'ДНЕС':
         return today
-      case 'TOMORROW':
-        return upcoming
-      case 'YESTERDAY':
-        return []
-      default:
-        return []
+      case 'УТРЕ':
+        const tomorrow = new Date(today)
+        tomorrow.setDate(tomorrow.getDate() + 1)
+        return tomorrow
+      case 'ВЧЕРА':
+        const yesterday = new Date(today)
+        yesterday.setDate(yesterday.getDate() - 1)
+        return yesterday
     }
   }
+
+  const displayDate = getDisplayDate(active)
 
   return (
     <main className="schedule-page">
       <header className="header">
         <div>
-          <h1>Match Schedule</h1>
-          <div className="date">Today • {new Date().toLocaleDateString()}</div>
+          <h1>Програма на мачовете</h1>
+          <div className="date">{active} • {displayDate.toLocaleDateString()}</div>
         </div>
         <div className="header-right">
           <div className="tabs">
@@ -46,15 +47,10 @@ const Home: React.FC = () => {
       </header>
 
       <section className="section">
-        <h2 className="section-title">{active === 'TODAY' ? 'Today' : active === 'TOMORROW' ? 'Tomorrow' : 'Yesterday'}</h2>
-        {getMatchesForTab(active).length ? (
-          <MatchList matches={getMatchesForTab(active)} />
-        ) : (
-          <div className="empty">No matches</div>
-        )}
+        <GamesWidget tab={active} />
       </section>
     </main>
-  )
-}
+  );
+};
 
 export default Home

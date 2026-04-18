@@ -1,47 +1,47 @@
-/* === DARK JEWEL TONE MATCH SCHEDULE SECTION === */
+/* === DARK THEME MATCH SCHEDULE SECTION === */
 
 :root {
-  /* Dark page background - Deep navy slate */
-  --schedule-bg: #0d1b2a;
-  --schedule-card: #1a2639;
-  --schedule-card-hover: #223548;
-  --schedule-border: #2d3e52;
+  /* Dark page background - Midnight */
+  --schedule-bg: #111827;
+  --schedule-card: #1f2937;
+  --schedule-card-hover: #374151;
+  --schedule-border: #374151;
   
-  /* League Headers - Jewel tone accents */
-  --league-header-bg: #1a2f42;
-  --league-header-text: #4dd9d4;
-  --league-accent: #2d5f7f;
+  /* League Headers - Dark accent */
+  --league-header-bg: #374151;
+  --league-header-text: #22c55e;
+  --league-accent: #1f2937;
   
   /* Tab Navigation */
-  --tab-inactive-bg: #192534;
-  --tab-inactive-text: #8899aa;
-  --tab-active-bg: #1e4d5c;
-  --tab-active-border: #4dd9d4;
-  --tab-active-text: #e0f2fe;
+  --tab-inactive-bg: #1f2937;
+  --tab-inactive-text: #9ca3af;
+  --tab-active-bg: #22c55e;
+  --tab-active-border: #22c55e;
+  --tab-active-text: #111827;
   
   /* Text Colors - High contrast */
-  --text-primary: #f0f4f8;
-  --text-secondary: #b8c5d6;
-  --text-muted: #7a8899;
-  --text-on-jewel: #e0f2fe;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --text-muted: #9ca3af;
+  --text-on-jewel: #f9fafb;
   
   /* Status Indicators - Bright, vibrant */
-  --status-live: #ff3d4a;
+  --status-live: #ef4444;
   --status-finished: #22c55e;
-  --status-upcoming: #6b7280;
-  --status-live-glow: rgba(255, 61, 74, 0.15);
+  --status-upcoming: #9ca3af;
+  --status-live-glow: rgba(239, 68, 68, 0.15);
   
   /* Time & Match Details */
-  --time-text: #a8d8ff;
-  --time-bg: #1f3a52;
+  --time-text: #e0e7ff;
+  --time-bg: #374151;
   
   /* Team Accents */
-  --team-home: #60a5fa;
-  --team-away: #34d399;
+  --team-home: #3b82f6;
+  --team-away: #ef4444;
   
   /* Focus & Hover */
-  --focus-ring: rgba(77, 217, 212, 0.3);
-  --separator: rgba(77, 217, 212, 0.08);
+  --focus-ring: rgba(34, 197, 94, 0.3);
+  --separator: rgba(34, 197, 94, 0.1);
 }
 
 /* Page Layout */
@@ -69,7 +69,7 @@
   font-size: 2em;
   font-weight: 900;
   letter-spacing: -0.5px;
-  background: linear-gradient(135deg, #4dd9d4 0%, #60a5fa 100%);
+  background: linear-gradient(135deg, #22c55e 0%, #3b82f6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -117,6 +117,11 @@
 .tab:hover:not(.active) {
   color: var(--text-on-jewel);
   background: rgba(77, 217, 212, 0.08);
+  transform: translateY(-1px);
+}
+
+.tab:active {
+  transform: translateY(0);
 }
 
 .tab.active {
@@ -172,7 +177,20 @@
   padding: 20px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInUp 0.5s ease-out both;
+}
+
+.league-group:nth-child(1) { animation-delay: 0s; }
+.league-group:nth-child(2) { animation-delay: 0.07s; }
+.league-group:nth-child(3) { animation-delay: 0.14s; }
+.league-group:nth-child(4) { animation-delay: 0.21s; }
+.league-group:nth-child(5) { animation-delay: 0.28s; }
+.league-group:nth-child(6) { animation-delay: 0.35s; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .league-group:hover {
@@ -226,7 +244,7 @@
   padding: 16px 12px;
   border-radius: 8px;
   border-bottom: 1px solid var(--separator);
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
 
@@ -238,6 +256,11 @@
   background: rgba(77, 217, 212, 0.05);
   padding-left: 16px;
   border-left: 3px solid var(--tab-active-border);
+  transform: translateX(2px);
+}
+
+.match-row:active {
+  transform: translateX(0) scale(0.995);
 }
 
 /* Match Time Column */

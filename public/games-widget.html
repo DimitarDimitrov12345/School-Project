@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Games Widget</title>
+    <link rel="stylesheet" href="/widgets/widgets.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 10px;
+            background: #0d1b2a;
+            font-family: "Raleway", sans-serif;
+        }
+        #myP {
+            display: none;
+        }
+        .wg_toolbar {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .wg_button_toggle {
+            padding: 8px 12px;
+            background: #1a2f42;
+            color: #8899aa;
+            border: 1px solid #2d3e52;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        .wg_button_toggle:hover {
+            background: #223548;
+            color: #e0f2fe;
+        }
+        .wg_button_toggle.wg_active {
+            background: #1e4d5c;
+            color: #4dd9d4;
+            border-color: #4dd9d4;
+        }
+        .wg_loader {
+            text-align: center;
+            padding: 20px;
+            color: #8899aa;
+        }
+        .wg_loader::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #4dd9d4;
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <p id="myP"></p>
+    <div id="wg-api-football-games"
+         data-host="v3.football.api-sports.io"
+         data-key=""
+         data-date=""
+         data-league=""
+         data-season=""
+         data-theme="dark"
+         data-refresh="15"
+         data-show-toolbar="true"
+         data-show-errors="false"
+         data-show-logos="true"
+         data-modal-game="true"
+         data-modal-standings="true"
+         data-modal-show-logos="true">
+    </div>
+
+    <script type="module">
+        // Import and initialize the widget
+        import { football_games } from '/widgets/games.js';
+
+        window.addEventListener("DOMContentLoaded", initWidget);
+        
+        function initWidget() {
+            const widgetEl = document.getElementById("wg-api-football-games");
+            if (!widgetEl) return;
+
+            // Get URL parameters from parent iframe
+            const urlParams = new URLSearchParams(window.location.search);
+            const dateParam = urlParams.get('date') || '';
+
+            const dataKey = widgetEl.getAttribute("data-key") || "";
+            const dataHost = widgetEl.getAttribute("data-host") || "v3.football.api-sports.io";
+            const dataDate = dateParam || widgetEl.getAttribute("data-date") || "";
+            const dataLeague = widgetEl.getAttribute("data-league") || "";
+            const dataSeason = widgetEl.getAttribute("data-season") || "";
+            const dataShowErrors = widgetEl.getAttribute("data-show-errors") || "false";
+            const dataShowLogos = widgetEl.getAttribute("data-show-logos") || "true";
+            const dataModalGame = widgetEl.getAttribute("data-modal-game") || "true";
+            const dataModalStandings = widgetEl.getAttribute("data-modal-standings") || "true";
+
+            // Create toolbar and data container
+            const toolbar = `
+                <div id="wg-football-toolbar" class="wg_toolbar">
+                    <span class="wg_button_toggle wg_active" data-select="all" data-sport="football">ALL</span>
+                    <span class="wg_button_toggle" data-select="live" data-sport="football">LIVE</span>
+                    <span class="wg_button_toggle" data-select="finished" data-sport="football">FINISHED</span>
+                    <span class="wg_button_toggle" data-select="scheduled" data-sport="football">SCHEDULED</span>
+                </div>
+                <div id="wg-football-data" class="wg_loader"></div>
+            `;
+            
+            widgetEl.innerHTML = toolbar;
+
+            // Initialize widget with data
+            football_games(dataDate, dataLeague, dataSeason, dataKey, dataHost, dataShowErrors, dataShowLogos, dataModalGame, dataModalStandings);
+            
+            // Set up filter buttons after a slight delay to ensure table is rendered
+            setTimeout(setupFilters, 100);
+        }
+        
+        function setupFilters() {
+            const filterButtons = document.querySelectorAll('.wg_button_toggle');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Update active button
+                    filterButtons.forEach(btn => btn.classList.remove('wg_active'));
+                    this.classList.add('wg_active');
+                    
+                    const filterType = this.getAttribute('data-select');
+                    filterMatches(filterType);
+                });
+            });
+        }
+        
+        function filterMatches(filterType) {
+            const rows = document.querySelectorAll('tr[data-status]');
+            
+            rows.forEach(row => {
+                const status = row.getAttribute('data-status');
+                let display = 'none';
+                
+                if (filterType === 'all') {
+                    display = '';
+                } else if (filterType === 'live') {
+                    if (['1H', '2H', 'ET', 'P', 'LIVE', 'HT', 'BT'].includes(status)) {
+                        display = '';
+                    }
+                } else if (filterType === 'finished') {
+                    if (['FT', 'AET', 'PEN'].includes(status)) {
+                        display = '';
+                    }
+                } else if (filterType === 'scheduled') {
+                    if (status === 'NS') {
+                        display = '';
+                    }
+                }
+                
+                row.style.display = display;
+            });
+        }
+
+        // Trigger DOMContentLoaded if already loaded
+        if (document.readyState !== 'loading') {
+            initWidget();
+        }
+    </script>
+</body>
+</html>

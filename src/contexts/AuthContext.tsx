@@ -2,13 +2,14 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 import type { User, Session } from '@supabase/supabase-js'
 import { supabase, isSupabaseConfigured } from '../lib/supabase'
 import type { Profile } from '../lib/supabase'
+import bcrypt from 'bcryptjs'
 
 type AuthState = {
   user: User | null
   profile: Profile | null
   session: Session | null
   loading: boolean
-  signUp: (email: string, password: string, username?: string) => Promise<{ error: Error | null }>
+  signUp: (email: string, password: string, username?: string, role?: 'user' | 'admin') => Promise<{ error: Error | null }>
   signIn: (identifier: string, password: string) => Promise<{ error: Error | null }>
   signOut: () => Promise<void>
 }
@@ -54,16 +55,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe()
   }, [])
 
-  const signUp = async (email: string, password: string, username?: string) => {
+  const signUp = async (email: string, password: string, username?: string, role: 'user' | 'admin' = 'user') => {
     if (!isSupabaseConfigured) {
       return { error: new Error('Supabase not configured. Copy .env.example to .env and add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.') }
     }
-    const { data, error } = await supabase.auth.signUp({ email, password, options: { data: username ? { username } : {} } })
+
+    // Check if email is already registered
+    const { data: existingEmail } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('email', email)
+      .single()
+    if (existingEmail) {
+      return { error: new Error('Този имейл вече е регистриран') }
+    }
+
+    // Check if username is already taken
+    if (username) {
+      const { data: existingUsername } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('username', username)
+        .single()
+      if (existingUsername) {
+        return { error: new Error('Това потребителско име вече е заето') }
+      }
+    }
+
+    // Hash the password before storing in profiles
+    const password_hash = await bcrypt.hash(password, 10)
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { username: username || email.split('@')[0], role, password_hash } }
+    })
     try {
       const user = data?.user
-      if (user && username) {
-        // best-effort: try to upsert username in profiles if trigger didn't set it yet
-        await supabase.from('profiles').upsert({ id: user.id, email: user.email, role: 'user', username }, { onConflict: 'id' })
+      if (user) {
+        await supabase.from('profiles').upsert({
+          id: user.id,
+          email: user.email,
+          username: username || email.split('@')[0],
+          password_hash,
+          role
+        }, { onConflict: 'id' })
       }
     } catch (e) {
       // ignore profile update errors here; can be handled elsewhere

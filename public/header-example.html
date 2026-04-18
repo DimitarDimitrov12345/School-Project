@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinalScore - Football Web App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+        }
+
+        /* Header Container */
+        .header-container {
+            width: 100%;
+        }
+
+        /* Main Header */
+        .header {
+            background-color: #f5f5f5;
+            padding: 20px 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+
+        /* Header Content */
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Logo Wrapper */
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .logo-wrapper:hover {
+            transform: scale(1.1);
+            opacity: 0.9;
+        }
+
+        /* Logo SVG */
+        .logo {
+            width: 50px;
+            height: 50px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+            transition: transform 0.3s ease;
+        }
+
+        /* Brand Text */
+        .brand-text {
+            margin: 0;
+            font-size: 32px;
+            font-weight: 700;
+            color: #1f2937;
+            letter-spacing: 3px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Divider Line */
+        .divider-line {
+            height: 2px;
+            background-color: #e5e7eb;
+            width: 100%;
+        }
+
+        /* Football Pitch Center Line */
+        .pitch-line {
+            height: 1px;
+            background-color: #d1d5db;
+            width: 100%;
+            background-image: repeating-linear-gradient(
+                90deg,
+                #d1d5db 0px,
+                #d1d5db 40px,
+                transparent 40px,
+                transparent 60px
+            );
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 12px;
+                padding: 16px 16px;
+            }
+
+            .brand-text {
+                font-size: 24px;
+                letter-spacing: 2px;
+            }
+
+            .logo-wrapper {
+                width: 40px;
+                height: 40px;
+            }
+
+            .logo {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 16px 0;
+            }
+
+            .brand-text {
+                font-size: 20px;
+                letter-spacing: 1px;
+            }
+
+            .logo-wrapper {
+                width: 35px;
+                height: 35px;
+            }
+
+            .logo {
+                width: 35px;
+                height: 35px;
+            }
+        }
+
+        /* Page Content */
+        .page-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .page-content h2 {
+            color: #1f2937;
+            margin-top: 24px;
+            margin-bottom: 12px;
+        }
+
+        .page-content p {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header-container">
+        <header class="header">
+            <div class="header-content">
+                <!-- Logo -->
+                <div class="logo-wrapper">
+                    <svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Football/stats icon -->
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#1f2937" stroke-width="2"/>
+                        <circle cx="50" cy="50" r="35" fill="none" stroke="#003da5" stroke-width="1.5"/>
+                        <line x1="50" y1="15" x2="50" y2="85" stroke="#FF6B35" stroke-width="2"/>
+                        <line x1="15" y1="50" x2="85" y2="50" stroke="#1f2937" stroke-width="1"/>
+                        <circle cx="50" cy="50" r="4" fill="#003da5"/>
+                    </svg>
+                </div>
+
+                <!-- Brand Text -->
+                <h1 class="brand-text">FinalScore</h1>
+            </div>
+        </header>
+
+        <!-- Divider -->
+        <div class="divider-line"></div>
+
+        <!-- Football Pitch Center Line -->
+        <div class="pitch-line"></div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="page-content">
+        <h2>Match Lineups & Formations</h2>
+        <p>Welcome to FinalScore - Your ultimate football statistics and predictions platform.</p>
+        
+        <h2>Features</h2>
+        <p>
+            • Live match updates<br>
+            • Team formations and lineups<br>
+            • Player statistics<br>
+            • Match analysis and predictions
+        </p>
+    </div>
+</body>
+</html>
