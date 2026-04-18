@@ -27,3 +27,5 @@ dist-ssr
 
 # Personal / test files
 test-widgets/Documents/
+
+.vercel

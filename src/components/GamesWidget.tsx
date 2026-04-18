@@ -47,9 +47,16 @@ const GamesWidget: React.FC<GamesWidgetProps> = ({ tab }) => {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`/saved-fixtures/fixtures_${selectedDate}.json`)
-      if (!res.ok) throw new Error('not found')
-      const data = await res.json()
+      let data: any
+      // Try API endpoint first (works on Vercel), fallback to static file (local dev)
+      const res = await fetch(`/api/saved-fixtures?date=${selectedDate}`)
+      if (res.ok) {
+        data = await res.json()
+      } else {
+        const fallback = await fetch(`/saved-fixtures/fixtures_${selectedDate}.json`)
+        if (!fallback.ok) throw new Error('not found')
+        data = await fallback.json()
+      }
       if (!data.response || data.response.length === 0) {
         setGrouped({})
         setLoading(false)

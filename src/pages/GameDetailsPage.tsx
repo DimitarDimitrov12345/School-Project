@@ -115,9 +115,18 @@ export default function GameDetailsPage() {
         }
         for (const date of datesToTry) {
           try {
-            const savedResponse = await fetch(`/saved-fixtures/fixtures_${date}.json`)
-            if (savedResponse.ok) {
-              const savedData = await savedResponse.json()
+            // Try API endpoint first (Vercel), then static file (local dev)
+            let savedData: any = null
+            const apiRes = await fetch(`/api/saved-fixtures?date=${date}`)
+            if (apiRes.ok) {
+              savedData = await apiRes.json()
+            } else {
+              const savedResponse = await fetch(`/saved-fixtures/fixtures_${date}.json`)
+              if (savedResponse.ok) {
+                savedData = await savedResponse.json()
+              }
+            }
+            if (savedData) {
               const foundFixture = savedData.response?.find((f: any) => f.fixture.id.toString() === fixtureId)
               if (foundFixture) {
                 setFixture(foundFixture)

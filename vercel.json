@@ -6,6 +6,7 @@
     { "source": "/api/save-fixtures", "destination": "/api/save-fixtures" },
     { "source": "/api/save-all-fixtures", "destination": "/api/save-all-fixtures" },
     { "source": "/api/delete-all-fixtures", "destination": "/api/delete-all-fixtures" },
+    { "source": "/api/saved-fixtures", "destination": "/api/saved-fixtures" },
     { "source": "/((?!api|games|saved-fixtures|widgets|fixtures).*)", "destination": "/index.html" }
   ]
 }

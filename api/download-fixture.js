@@ -1,7 +1,4 @@
-import fs from 'fs'
-import path from 'path'
-
-const FIXTURES_DIR = path.join(process.cwd(), 'saved-fixtures')
+import { uploadFixture } from './_supabase.js'
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -21,17 +18,13 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing fixture ID' })
     }
 
-    if (!fs.existsSync(FIXTURES_DIR)) {
-      fs.mkdirSync(FIXTURES_DIR, { recursive: true })
-    }
-
     const apiKey = process.env.VITE_FOOTBALL_API_KEY || process.env.FOOTBALL_API_KEY
 
     if (!apiKey) {
       return res.status(500).json({ error: 'API key not configured' })
     }
 
-    const response = await fetch(`https://v3.football.api-sports.io/fixtures?id=${id}`, {
+    const response = await fetch(`https://v3.football.api-sports.io/fixtures?id=${encodeURIComponent(id)}`, {
       method: 'GET',
       headers: {
         'x-apisports-key': apiKey,
@@ -55,16 +48,14 @@ export default async function handler(req, res) {
 
     const fixture = data.response[0]
 
-    // Save to individual fixture file
+    // Save to Supabase Storage
     const filename = `fixture_${id}.json`
-    const filepath = path.join(FIXTURES_DIR, filename)
-    fs.writeFileSync(filepath, JSON.stringify(fixture, null, 2), 'utf8')
+    await uploadFixture(filename, fixture)
 
     res.json({
       success: true,
       message: `Downloaded fixture ${id}`,
       filename,
-      filepath,
       fixture,
       hasStatistics: !!fixture.statistics
     })

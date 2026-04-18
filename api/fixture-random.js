@@ -1,7 +1,4 @@
-import fs from 'fs'
-import path from 'path'
-
-const FIXTURES_DIR = path.join(process.cwd(), 'saved-fixtures')
+import { downloadFixture } from './_supabase.js'
 
 const TOP_LEAGUE_IDS = [
   39, 140, 135, 78, 61, 2, 3, 848, 1, 4, 94, 88, 172, 203, 179, 253, 307
@@ -9,7 +6,7 @@ const TOP_LEAGUE_IDS = [
 
 const PRIORITY_LEAGUES = [39, 140, 61]
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS')
@@ -26,15 +23,10 @@ export default function handler(req, res) {
     const month = String(today.getMonth() + 1).padStart(2, '0')
     const day = String(today.getDate()).padStart(2, '0')
     const todayFile = `fixtures_${year}-${month}-${day}.json`
-    const todayPath = path.join(FIXTURES_DIR, todayFile)
 
-    if (!fs.existsSync(todayPath)) {
-      return res.status(404).json({ success: false, error: 'No fixtures available for today' })
-    }
+    const todayData = await downloadFixture(todayFile)
 
-    const todayData = JSON.parse(fs.readFileSync(todayPath, 'utf8'))
-
-    if (!todayData.response || todayData.response.length === 0) {
+    if (!todayData || !todayData.response || todayData.response.length === 0) {
       return res.status(404).json({ success: false, error: 'No fixtures available for today' })
     }
 

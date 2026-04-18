@@ -107,9 +107,22 @@ app.post('/api/save-all-fixtures', (req, res) => {
   }
 })
 
-// Get saved files list
+// Get saved fixtures - if ?date= param, return fixture data; otherwise list files
 app.get('/api/saved-fixtures', (req, res) => {
   try {
+    const { date } = req.query
+
+    // If date param provided, serve that fixture file
+    if (date) {
+      const filepath = path.join(FIXTURES_DIR, `fixtures_${date}.json`)
+      if (fs.existsSync(filepath)) {
+        const data = JSON.parse(fs.readFileSync(filepath, 'utf8'))
+        return res.json(data)
+      }
+      return res.status(404).json({ error: `No fixtures found for ${date}` })
+    }
+
+    // Otherwise list all files
     const files = fs.readdirSync(FIXTURES_DIR)
       .filter(f => f.endsWith('.json'))
       .map(f => {
