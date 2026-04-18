@@ -1,10 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY
+const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY
 
 if (!supabaseUrl || !supabaseKey) {
-  console.warn('⚠️ Supabase not configured — set SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY env vars')
+  console.warn('⚠️ Supabase not configured — set SUPABASE_URL + SUPABASE_ANON_KEY env vars')
 }
 
 export const supabase = createClient(
@@ -12,56 +12,52 @@ export const supabase = createClient(
   supabaseKey || 'placeholder'
 )
 
-const BUCKET = 'fixtures'
+const TABLE = 'fixtures_cache'
 
 /**
- * Upload a JSON file to Supabase Storage
+ * Save a fixture JSON to the database
  */
 export async function uploadFixture(filename, data) {
-  const content = typeof data === 'string' ? data : JSON.stringify(data, null, 2)
-  const { error } = await supabase.storage
-    .from(BUCKET)
-    .upload(filename, content, {
-      contentType: 'application/json',
-      upsert: true
-    })
-  if (error) throw new Error(`Upload failed: ${error.message}`)
+  const { error } = await supabase
+    .from(TABLE)
+    .upsert({ filename, data, updated_at: new Date().toISOString() }, { onConflict: 'filename' })
+  if (error) throw new Error(`Save failed: ${error.message}`)
   return filename
 }
 
 /**
- * Download a JSON file from Supabase Storage
+ * Load a fixture JSON from the database
  */
 export async function downloadFixture(filename) {
-  const { data, error } = await supabase.storage
-    .from(BUCKET)
-    .download(filename)
-  if (error) return null
-  const text = await data.text()
-  return JSON.parse(text)
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select('data')
+    .eq('filename', filename)
+    .single()
+  if (error || !data) return null
+  return data.data
 }
 
 /**
- * List all fixture files in the bucket
+ * List all fixture files in the database
  */
 export async function listFixtures() {
-  const { data, error } = await supabase.storage
-    .from(BUCKET)
-    .list('', { limit: 200 })
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select('filename, updated_at')
   if (error) throw new Error(`List failed: ${error.message}`)
-  return (data || []).filter(f => f.name.endsWith('.json'))
+  return data || []
 }
 
 /**
- * Delete all fixture files from the bucket
+ * Delete all fixture entries from the database
  */
 export async function deleteAllFixtures() {
-  const files = await listFixtures()
-  if (files.length === 0) return 0
-  const paths = files.map(f => f.name)
-  const { error } = await supabase.storage
-    .from(BUCKET)
-    .remove(paths)
+  const { data, error } = await supabase
+    .from(TABLE)
+    .delete()
+    .neq('filename', '')
+    .select('filename')
   if (error) throw new Error(`Delete failed: ${error.message}`)
-  return paths.length
+  return data?.length || 0
 }
