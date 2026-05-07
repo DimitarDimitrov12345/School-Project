@@ -85,8 +85,10 @@
 
 .header-right {
   display: flex;
-  align-items: center;
-  gap: 16px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  flex: 0 0 min(100%, 420px);
 }
 
 /* Tab Navigation */
@@ -97,6 +99,57 @@
   padding: 6px;
   border-radius: 12px;
   border: 1px solid var(--schedule-border);
+}
+
+.schedule-search {
+  position: relative;
+  width: min(100%, 420px);
+}
+
+.schedule-search-input {
+  width: 100%;
+  padding: 12px 100px 12px 16px;
+  border: 1px solid var(--schedule-border);
+  border-radius: 12px;
+  background: var(--schedule-card);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.schedule-search-input::placeholder {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.schedule-search-input:focus {
+  outline: none;
+  border-color: var(--tab-active-border);
+  box-shadow: 0 0 0 4px var(--focus-ring);
+  background: rgba(31, 41, 55, 0.92);
+}
+
+.schedule-search-clear {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.14);
+  color: var(--text-secondary);
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.schedule-search-clear:hover {
+  background: rgba(34, 197, 94, 0.24);
+  color: var(--text-primary);
+  transform: translateY(-50%) scale(1.02);
 }
 
 .tab {
@@ -455,6 +508,12 @@
     gap: 16px;
   }
 
+  .header-right {
+    width: 100%;
+    align-items: stretch;
+    flex-basis: auto;
+  }
+
   .header h1 {
     font-size: 1.6em;
   }
@@ -528,5 +587,21 @@
     flex: 1;
     padding: 8px 10px;
     font-size: 0.85em;
+  }
+
+  .schedule-search,
+  .schedule-search-input {
+    width: 100%;
+  }
+
+  .schedule-search-input {
+    padding-right: 92px;
+    font-size: 0.9rem;
+  }
+
+  .schedule-search-clear {
+    right: 8px;
+    padding: 5px 9px;
+    font-size: 0.75rem;
   }
 }

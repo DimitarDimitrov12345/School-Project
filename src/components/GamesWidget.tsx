@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import '../styles/gamesWidget.css'
 
 interface GamesWidgetProps {
-  tab: 'ДНЕС' | 'УТРЕ' | 'ВЧЕРА'
+  tab: '\u0414\u041d\u0415\u0421' | '\u0423\u0422\u0420\u0415' | '\u0412\u0427\u0415\u0420\u0410'
+  searchQuery?: string
 }
 
 interface FixtureData {
@@ -18,6 +19,18 @@ const TOP_LEAGUE_IDS = [2, 3, 848, 39, 140, 135, 78, 61]
 const LIVE = ['1H', '2H', 'ET', 'P', 'LIVE']
 const BREAK = ['HT', 'BT']
 const FINISHED = ['FT', 'AET', 'PEN']
+const LABELS = {
+  today: '\u0414\u041d\u0415\u0421',
+  tomorrow: '\u0423\u0422\u0420\u0415',
+  yesterday: '\u0412\u0427\u0415\u0420\u0410',
+  all: '\u0412\u0421\u0418\u0427\u041a\u0418',
+  finished: '\u0417\u0410\u0412\u042a\u0420\u0428\u0418\u041b\u0418',
+  scheduled: '\u041f\u0420\u0415\u0414\u0421\u0422\u041e\u042f\u0429\u0418',
+  loading: '\u0417\u0430\u0440\u0435\u0436\u0434\u0430\u043d\u0435...',
+  noMatches: '\u041d\u044f\u043c\u0430 \u043d\u0430\u043b\u0438\u0447\u043d\u0438 \u043c\u0430\u0447\u043e\u0432\u0435',
+  noMatchesForFilter: '\u041d\u044f\u043c\u0430 \u043c\u0430\u0447\u043e\u0432\u0435 \u0437\u0430 \u0438\u0437\u0431\u0440\u0430\u043d\u0438\u044f \u0444\u0438\u043b\u0442\u044a\u0440',
+  noResultsPrefix: '\u041d\u044f\u043c\u0430 \u0440\u0435\u0437\u0443\u043b\u0442\u0430\u0442\u0438 \u0437\u0430 ',
+} as const
 
 function formatTime(ts: number) {
   const d = new Date(ts * 1000)
@@ -26,18 +39,26 @@ function formatTime(ts: number) {
   return `${h}:${m}`
 }
 
-const GamesWidget: React.FC<GamesWidgetProps> = ({ tab }) => {
+const GamesWidget: React.FC<GamesWidgetProps> = ({ tab, searchQuery = '' }) => {
   const navigate = useNavigate()
   const [grouped, setGrouped] = useState<Record<string, { league: FixtureData['league']; fixtures: FixtureData[] }>>({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [filter, setFilter] = useState<'all' | 'finished' | 'scheduled'>('all')
+  const normalizedSearchQuery = searchQuery.trim().toLocaleLowerCase()
 
-  const getDateForTab = (tabName: 'ДНЕС' | 'УТРЕ' | 'ВЧЕРА'): string => {
+  const getDateForTab = (
+    tabName: '\u0414\u041d\u0415\u0421' | '\u0423\u0422\u0420\u0415' | '\u0412\u0427\u0415\u0420\u0410'
+  ): string => {
     const today = new Date()
     const date = new Date(today)
-    if (tabName === 'УТРЕ') date.setDate(today.getDate() + 1)
-    else if (tabName === 'ВЧЕРА') date.setDate(today.getDate() - 1)
+
+    if (tabName === LABELS.tomorrow) {
+      date.setDate(today.getDate() + 1)
+    } else if (tabName === LABELS.yesterday) {
+      date.setDate(today.getDate() - 1)
+    }
+
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
   }
 
@@ -46,9 +67,10 @@ const GamesWidget: React.FC<GamesWidgetProps> = ({ tab }) => {
   const fetchFixtures = useCallback(async () => {
     setLoading(true)
     setError(null)
+
     try {
-      let data: any
-      // Try API endpoint first (works on Vercel), fallback to static file (local dev)
+      let data: { response?: FixtureData[] }
+
       const res = await fetch(`/api/saved-fixtures?date=${selectedDate}`)
       if (res.ok) {
         data = await res.json()
@@ -57,115 +79,167 @@ const GamesWidget: React.FC<GamesWidgetProps> = ({ tab }) => {
         if (!fallback.ok) throw new Error('not found')
         data = await fallback.json()
       }
+
       if (!data.response || data.response.length === 0) {
         setGrouped({})
         setLoading(false)
         return
       }
 
-      // Sort by timestamp
-      data.response.sort((a: FixtureData, b: FixtureData) => a.fixture.timestamp - b.fixture.timestamp)
+      data.response.sort((a, b) => a.fixture.timestamp - b.fixture.timestamp)
 
-      // Group by league
       const groups: Record<string, { league: FixtureData['league']; fixtures: FixtureData[] }> = {}
-      for (const f of data.response as FixtureData[]) {
-        const key = `league-${f.league.id}`
-        if (!groups[key]) groups[key] = { league: f.league, fixtures: [] }
-        groups[key].fixtures.push(f)
+      for (const fixture of data.response) {
+        const key = `league-${fixture.league.id}`
+        if (!groups[key]) groups[key] = { league: fixture.league, fixtures: [] }
+        groups[key].fixtures.push(fixture)
       }
 
-      // Sort leagues: top leagues first
       const sorted: typeof groups = {}
       const keys = Object.keys(groups).sort((a, b) => {
         const aId = groups[a].league.id
         const bId = groups[b].league.id
         const aIdx = TOP_LEAGUE_IDS.indexOf(aId)
         const bIdx = TOP_LEAGUE_IDS.indexOf(bId)
+
         if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx
         if (aIdx !== -1) return -1
         if (bIdx !== -1) return 1
         return 0
       })
-      for (const k of keys) sorted[k] = groups[k]
+
+      for (const key of keys) {
+        sorted[key] = groups[key]
+      }
 
       setGrouped(sorted)
     } catch {
-      setError('Няма налични мачове')
+      setError(LABELS.noMatches)
       setGrouped({})
     } finally {
       setLoading(false)
     }
   }, [selectedDate])
 
-  useEffect(() => { fetchFixtures() }, [fetchFixtures])
+  useEffect(() => {
+    fetchFixtures()
+  }, [fetchFixtures])
 
-  const handleClick = (f: FixtureData) => {
-    try { localStorage.setItem('selectedFixture', JSON.stringify(f)) } catch {}
-    navigate(`/game/${f.fixture.id}`)
+  const handleClick = (fixture: FixtureData) => {
+    try {
+      localStorage.setItem('selectedFixture', JSON.stringify(fixture))
+    } catch {
+      // Ignore storage failures so match navigation still works.
+    }
+
+    navigate(`/game/${fixture.fixture.id}`)
   }
 
-  const filterMatch = (f: FixtureData) => {
-    if (filter === 'finished') return FINISHED.includes(f.fixture.status.short)
-    if (filter === 'scheduled') return f.fixture.status.short === 'NS'
+  const filterMatch = (fixture: FixtureData) => {
+    if (filter === 'finished') return FINISHED.includes(fixture.fixture.status.short)
+    if (filter === 'scheduled') return fixture.fixture.status.short === 'NS'
     return true
   }
 
+  const matchesSearch = (fixture: FixtureData) => {
+    if (!normalizedSearchQuery) return true
+
+    const haystack = [
+      fixture.league.country,
+      fixture.league.name,
+      fixture.teams.home.name,
+      fixture.teams.away.name,
+    ]
+      .join(' ')
+      .toLocaleLowerCase()
+
+    return haystack.includes(normalizedSearchQuery)
+  }
+
+  const visibleLeagues = Object.values(grouped)
+    .map(({ league, fixtures }) => ({
+      league,
+      fixtures: fixtures.filter((fixture) => filterMatch(fixture) && matchesSearch(fixture)),
+    }))
+    .filter(({ fixtures }) => fixtures.length > 0)
+
+  const emptyMessage = normalizedSearchQuery
+    ? `${LABELS.noResultsPrefix}"${searchQuery.trim()}"`
+    : filter !== 'all'
+      ? LABELS.noMatchesForFilter
+      : LABELS.noMatches
+
   if (loading) {
-    return <div className="gw-container"><div className="gw-loading">Зареждане...</div></div>
+    return <div className="gw-container"><div className="gw-loading">{LABELS.loading}</div></div>
   }
 
   if (error || Object.keys(grouped).length === 0) {
-    return <div className="gw-container"><div className="gw-empty">Няма налични мачове</div></div>
+    return <div className="gw-container"><div className="gw-empty">{LABELS.noMatches}</div></div>
   }
 
   return (
     <div className="gw-container">
       <div className="gw-toolbar">
-        {(['all', 'finished', 'scheduled'] as const).map(f => (
-          <button key={f} className={`gw-filter-btn ${filter === f ? 'active' : ''}`} onClick={() => setFilter(f)}>
-            {f === 'all' ? 'ВСИЧКИ' : f === 'finished' ? 'ЗАВЪРШИЛИ' : 'ПРЕДСТОЯЩИ'}
+        {(['all', 'finished', 'scheduled'] as const).map((value) => (
+          <button
+            key={value}
+            className={`gw-filter-btn ${filter === value ? 'active' : ''}`}
+            onClick={() => setFilter(value)}
+          >
+            {value === 'all' ? LABELS.all : value === 'finished' ? LABELS.finished : LABELS.scheduled}
           </button>
         ))}
       </div>
 
-      {Object.values(grouped).map(({ league, fixtures }) => {
-        const visible = fixtures.filter(filterMatch)
-        if (visible.length === 0) return null
-        return (
-          <div key={league.id} className="gw-league">
-            <div className="gw-league-header">
-              {league.flag && <img src={league.flag} alt="" className="gw-flag" loading="lazy" />}
-              <span>{league.country}: {league.name}</span>
-            </div>
-            {visible.map(f => {
-              const st = f.fixture.status.short
-              const isLive = LIVE.includes(st)
-              const isBreak = BREAK.includes(st)
-              const isFinished = FINISHED.includes(st)
-              const statusClass = isLive ? 'gw-live' : isBreak ? 'gw-break' : isFinished ? 'gw-finished' : ''
-              const statusText = st === 'NS' ? formatTime(f.fixture.timestamp) : isLive && f.fixture.status.elapsed ? `${f.fixture.status.elapsed}'` : st
+      {visibleLeagues.length === 0 && (
+        <div className="gw-empty">{emptyMessage}</div>
+      )}
 
-              return (
-                <div key={f.fixture.id} className="gw-match" onClick={() => handleClick(f)}>
-                  <div className={`gw-status ${statusClass}`}>{statusText}</div>
-                  <div className="gw-teams">
-                    <div className="gw-team"><img src={f.teams.home.logo} alt="" className="gw-logo" loading="lazy" /><span>{f.teams.home.name}</span></div>
-                    <div className="gw-team"><img src={f.teams.away.logo} alt="" className="gw-logo" loading="lazy" /><span>{f.teams.away.name}</span></div>
+      {visibleLeagues.map(({ league, fixtures }) => (
+        <div key={league.id} className="gw-league">
+          <div className="gw-league-header">
+            {league.flag && <img src={league.flag} alt="" className="gw-flag" loading="lazy" />}
+            <span>{league.country}: {league.name}</span>
+          </div>
+
+          {fixtures.map((fixture) => {
+            const statusShort = fixture.fixture.status.short
+            const isLive = LIVE.includes(statusShort)
+            const isBreak = BREAK.includes(statusShort)
+            const isFinished = FINISHED.includes(statusShort)
+            const statusClass = isLive ? 'gw-live' : isBreak ? 'gw-break' : isFinished ? 'gw-finished' : ''
+            const statusText = statusShort === 'NS'
+              ? formatTime(fixture.fixture.timestamp)
+              : isLive && fixture.fixture.status.elapsed
+                ? `${fixture.fixture.status.elapsed}'`
+                : statusShort
+
+            return (
+              <div key={fixture.fixture.id} className="gw-match" onClick={() => handleClick(fixture)}>
+                <div className={`gw-status ${statusClass}`}>{statusText}</div>
+                <div className="gw-teams">
+                  <div className="gw-team">
+                    <img src={fixture.teams.home.logo} alt="" className="gw-logo" loading="lazy" />
+                    <span>{fixture.teams.home.name}</span>
                   </div>
-                  <div className={`gw-score ${isLive ? 'gw-live' : ''}`}>
-                    <span>{f.goals.home ?? '-'}</span>
-                    <span>{f.goals.away ?? '-'}</span>
-                  </div>
-                  <div className="gw-ht">
-                    <span>{f.score.halftime.home != null ? `(${f.score.halftime.home})` : ''}</span>
-                    <span>{f.score.halftime.away != null ? `(${f.score.halftime.away})` : ''}</span>
+                  <div className="gw-team">
+                    <img src={fixture.teams.away.logo} alt="" className="gw-logo" loading="lazy" />
+                    <span>{fixture.teams.away.name}</span>
                   </div>
                 </div>
-              )
-            })}
-          </div>
-        )
-      })}
+                <div className={`gw-score ${isLive ? 'gw-live' : ''}`}>
+                  <span>{fixture.goals.home ?? '-'}</span>
+                  <span>{fixture.goals.away ?? '-'}</span>
+                </div>
+                <div className="gw-ht">
+                  <span>{fixture.score.halftime.home != null ? `(${fixture.score.halftime.home})` : ''}</span>
+                  <span>{fixture.score.halftime.away != null ? `(${fixture.score.halftime.away})` : ''}</span>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      ))}
     </div>
   )
 }
