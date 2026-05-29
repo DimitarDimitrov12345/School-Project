@@ -78,12 +78,12 @@ const Navbar: React.FC<Props> = () => {
                 <div className="profile-menu">
                 {profile.role === 'user' && (
                   <>
-                    <Link to="/" className="menu-item" onClick={() => setProfileMenuOpen(false)}>
+                    <Link to="/profile" className="menu-item" onClick={() => setProfileMenuOpen(false)}>
                       👤 Моят профил
                     </Link>
-                    <a href="#predictions" className="menu-item">
+                    <Link to="/predictions-game" className="menu-item" onClick={() => setProfileMenuOpen(false)}>
                       🎯 Моите прогнози
-                    </a>
+                    </Link>
                     <a href="#favorites" className="menu-item">
                       ⭐ Любими
                     </a>
@@ -106,9 +106,6 @@ const Navbar: React.FC<Props> = () => {
                     >
                       📊 Администраторски панел
                     </Link>
-                    <a href="#leagues" className="menu-item">
-                      🏆 Управление на лиги
-                    </a>
                     <a href="#matches" className="menu-item">
                       ⚽ Управление на мачове
                     </a>

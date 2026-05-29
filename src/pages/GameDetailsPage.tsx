@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import MatchStatistics from '../components/MatchStatistics'
 import Navbar from '../components/Navbar'
 import BottomNavbar from '../components/BottomNavbar'
@@ -52,10 +52,17 @@ export default function GameDetailsPage() {
   const [error, setError] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [downloadingStats, setDownloadingStats] = useState(false)
+  const requestedFixturesRef = useRef<Set<string>>(new Set())
+  const inProgressFixturesRef = useRef<Set<string>>(new Set())
 
   // Auto-download fixture data from API in background
   const downloadFixtureFromAPI = async (id: string) => {
+    if (requestedFixturesRef.current.has(id) || inProgressFixturesRef.current.has(id)) {
+      return
+    }
+
     try {
+      inProgressFixturesRef.current.add(id)
       setDownloadingStats(true)
       console.log(`📥 Auto-downloading fixture ${id} from API...`)
       const response = await fetch(`/api/download-fixture?id=${id}`, {
@@ -65,7 +72,8 @@ export default function GameDetailsPage() {
       
       if (response.ok) {
         const data = await response.json()
-        console.log(`✅ Fixture ${id} downloaded and saved`)
+        requestedFixturesRef.current.add(id)
+        console.log(`✅ Fixture ${id} ready (${data.cached ? 'cached' : 'downloaded'})`)
         // Update state with the downloaded fixture that includes full statistics
         if (data.fixture) {
           setFixture(data.fixture)
@@ -74,6 +82,7 @@ export default function GameDetailsPage() {
     } catch (err) {
       console.error('Error auto-downloading fixture:', err)
     } finally {
+      inProgressFixturesRef.current.delete(id)
       setDownloadingStats(false)
     }
   }

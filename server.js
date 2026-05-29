@@ -22,6 +22,7 @@ app.use((req, res, next) => {
 
 // Save fixtures to saved-fixtures folder
 const FIXTURES_DIR = path.join(__dirname, 'saved-fixtures')
+const inFlightFixtureDownloads = new Map()
 
 // Create directory if it doesn't exist
 if (!fs.existsSync(FIXTURES_DIR)) {
@@ -338,6 +339,48 @@ app.post('/api/download-fixture/:id?', async (req, res) => {
   try {
     const id = req.params.id || req.query.id
     console.log(`\n📥 REQUEST: POST /api/download-fixture/${id}`)
+
+    if (!id) {
+      return res.status(400).json({ error: 'Missing fixture id' })
+    }
+
+    const filename = `fixture_${id}.json`
+    const filepath = path.join(FIXTURES_DIR, filename)
+
+    // 1) Return cached file if it already exists.
+    if (fs.existsSync(filepath)) {
+      try {
+        const cachedFixture = JSON.parse(fs.readFileSync(filepath, 'utf8'))
+        console.log(`   ✅ Fixture ${id} already exists, skipping download`)
+        return res.json({
+          success: true,
+          message: `Fixture ${id} already cached`,
+          filename,
+          filepath,
+          fixture: cachedFixture,
+          hasStatistics: !!cachedFixture.statistics,
+          cached: true
+        })
+      } catch (readErr) {
+        console.log(`   ⚠️ Cached file for ${id} is unreadable, downloading again...`)
+      }
+    }
+
+    // 2) If another request is already downloading this fixture, reuse it.
+    if (inFlightFixtureDownloads.has(id)) {
+      console.log(`   ⏳ Fixture ${id} is already downloading, reusing in-flight result`)
+      const fixture = await inFlightFixtureDownloads.get(id)
+      return res.json({
+        success: true,
+        message: `Fixture ${id} reused in-flight download`,
+        filename,
+        filepath,
+        fixture,
+        hasStatistics: !!fixture?.statistics,
+        cached: true,
+        deduped: true
+      })
+    }
     
     const apiKey = process.env.VITE_FOOTBALL_API_KEY || 'a88a07b7f2212e54b2cea37bcb8bcac6'
     
@@ -353,34 +396,37 @@ app.post('/api/download-fixture/:id?', async (req, res) => {
       }
     };
 
-    console.log(`   🌐 Fetching fixture ${id} from API (with statistics)...`)
-    // Request fixture with stats included
-    const response = await fetch(`https://v3.football.api-sports.io/fixtures?id=${id}`, options)
-    
-    if (!response.ok) {
-      console.error(`   ❌ API error: ${response.statusText}`)
-      return res.status(response.status).json({ error: `API error: ${response.statusText}` })
+    const downloadPromise = (async () => {
+      console.log(`   🌐 Fetching fixture ${id} from API (with statistics)...`)
+      const response = await fetch(`https://v3.football.api-sports.io/fixtures?id=${id}`, options)
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.statusText}`)
+      }
+
+      const data = await response.json()
+
+      if (data.errors && Object.keys(data.errors).length > 0) {
+        throw new Error(`API error: ${JSON.stringify(data.errors)}`)
+      }
+
+      if (!data.response || data.response.length === 0) {
+        throw new Error(`Fixture ${id} not found`)
+      }
+
+      const fixture = data.response[0]
+      fs.writeFileSync(filepath, JSON.stringify(fixture, null, 2), 'utf8')
+      return fixture
+    })()
+
+    inFlightFixtureDownloads.set(id, downloadPromise)
+
+    let fixture
+    try {
+      fixture = await downloadPromise
+    } finally {
+      inFlightFixtureDownloads.delete(id)
     }
-
-    const data = await response.json()
-
-    if (data.errors && Object.keys(data.errors).length > 0) {
-      console.error(`   ❌ API error:`, data.errors)
-      return res.status(400).json({ error: data.errors[0] })
-    }
-
-    if (!data.response || data.response.length === 0) {
-      console.log(`   ⚠️ Fixture ${id} not found in API`)
-      return res.status(404).json({ error: `Fixture ${id} not found` })
-    }
-
-    const fixture = data.response[0]
-    
-    // Save to individual fixture file
-    const filename = `fixture_${id}.json`
-    const filepath = path.join(FIXTURES_DIR, filename)
-    
-    fs.writeFileSync(filepath, JSON.stringify(fixture, null, 2), 'utf8')
     
     console.log(`   ✅ Downloaded fixture ${id}`)
     console.log(`   📊 Has statistics: ${fixture.statistics ? 'Yes' : 'No'}`)
@@ -389,10 +435,12 @@ app.post('/api/download-fixture/:id?', async (req, res) => {
     res.json({
       success: true,
       message: `Downloaded fixture ${id}`,
-      filename: filename,
-      filepath: filepath,
-      fixture: fixture,
-      hasStatistics: !!fixture.statistics
+      filename,
+      filepath,
+      fixture,
+      hasStatistics: !!fixture.statistics,
+      cached: false,
+      deduped: false
     })
   } catch (error) {
     console.error('   ❌ ERROR:', error.message)

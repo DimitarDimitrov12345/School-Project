@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useDeferredValue, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import '../styles/gamesWidget.css'
 
 interface GamesWidgetProps {
   tab: '\u0414\u041d\u0415\u0421' | '\u0423\u0422\u0420\u0415' | '\u0412\u0427\u0415\u0420\u0410'
-  searchQuery?: string
 }
 
 interface FixtureData {
@@ -30,6 +29,8 @@ const LABELS = {
   noMatches: '\u041d\u044f\u043c\u0430 \u043d\u0430\u043b\u0438\u0447\u043d\u0438 \u043c\u0430\u0447\u043e\u0432\u0435',
   noMatchesForFilter: '\u041d\u044f\u043c\u0430 \u043c\u0430\u0447\u043e\u0432\u0435 \u0437\u0430 \u0438\u0437\u0431\u0440\u0430\u043d\u0438\u044f \u0444\u0438\u043b\u0442\u044a\u0440',
   noResultsPrefix: '\u041d\u044f\u043c\u0430 \u0440\u0435\u0437\u0443\u043b\u0442\u0430\u0442\u0438 \u0437\u0430 ',
+  search: '\u0422\u044a\u0440\u0441\u0438 \u043e\u0442\u0431\u043e\u0440, \u043b\u0438\u0433\u0430 \u0438\u043b\u0438 \u0434\u044a\u0440\u0436\u0430\u0432\u0430',
+  clearSearch: '\u0418\u0437\u0447\u0438\u0441\u0442\u0438',
 } as const
 
 function formatTime(ts: number) {
@@ -39,13 +40,15 @@ function formatTime(ts: number) {
   return `${h}:${m}`
 }
 
-const GamesWidget: React.FC<GamesWidgetProps> = ({ tab, searchQuery = '' }) => {
+const GamesWidget: React.FC<GamesWidgetProps> = ({ tab }) => {
   const navigate = useNavigate()
   const [grouped, setGrouped] = useState<Record<string, { league: FixtureData['league']; fixtures: FixtureData[] }>>({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [filter, setFilter] = useState<'all' | 'finished' | 'scheduled'>('all')
-  const normalizedSearchQuery = searchQuery.trim().toLocaleLowerCase()
+  const [searchQuery, setSearchQuery] = useState('')
+  const deferredSearchQuery = useDeferredValue(searchQuery.trim())
+  const normalizedSearchQuery = deferredSearchQuery.toLocaleLowerCase()
 
   const getDateForTab = (
     tabName: '\u0414\u041d\u0415\u0421' | '\u0423\u0422\u0420\u0415' | '\u0412\u0427\u0415\u0420\u0410'
@@ -180,15 +183,40 @@ const GamesWidget: React.FC<GamesWidgetProps> = ({ tab, searchQuery = '' }) => {
   return (
     <div className="gw-container">
       <div className="gw-toolbar">
-        {(['all', 'finished', 'scheduled'] as const).map((value) => (
-          <button
-            key={value}
-            className={`gw-filter-btn ${filter === value ? 'active' : ''}`}
-            onClick={() => setFilter(value)}
-          >
-            {value === 'all' ? LABELS.all : value === 'finished' ? LABELS.finished : LABELS.scheduled}
-          </button>
-        ))}
+        <div className="gw-filter-group">
+          {(['finished', 'all', 'scheduled'] as const).map((value) => (
+            <button
+              key={value}
+              className={`gw-filter-btn ${filter === value ? 'active' : ''}`}
+              onClick={() => setFilter(value)}
+            >
+              {value === 'all' ? LABELS.all : value === 'finished' ? LABELS.finished : LABELS.scheduled}
+            </button>
+          ))}
+        </div>
+
+        <div className="gw-search-wrap">
+          <input
+            id="gw-search"
+            type="search"
+            className="gw-search-input"
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            placeholder={LABELS.search}
+            aria-label={LABELS.search}
+            autoComplete="off"
+            spellCheck={false}
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              className="gw-search-clear"
+              onClick={() => setSearchQuery('')}
+            >
+              {LABELS.clearSearch}
+            </button>
+          )}
+        </div>
       </div>
 
       {visibleLeagues.length === 0 && (

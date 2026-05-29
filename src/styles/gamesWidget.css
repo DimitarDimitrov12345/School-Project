@@ -3,34 +3,43 @@
   background: #0d1b2a;
   color: #e2e8f0;
   font-family: 'Raleway', sans-serif;
-  font-size: 13px;
+  font-size: 16px;
 }
 
 .gw-loading, .gw-empty {
   text-align: center;
-  padding: 32px 16px;
+  padding: 40px 18px;
   color: #64748b;
-  font-size: 14px;
+  font-size: 17px;
 }
 
 .gw-toolbar {
   display: flex;
-  gap: 8px;
-  justify-content: center;
-  padding: 8px 0 12px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 0 16px;
   border-bottom: 1px solid rgba(1, 208, 153, 0.2);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+.gw-filter-group {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .gw-filter-btn {
   background: transparent;
   border: 1px solid #334155;
   color: #94a3b8;
-  padding: 5px 14px;
-  border-radius: 6px;
+  padding: 8px 18px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   transition: all 0.2s;
 }
 
@@ -45,34 +54,81 @@
   color: #e2e8f0;
 }
 
+.gw-search-wrap {
+  position: relative;
+  width: min(100%, 520px);
+}
+
+.gw-search-input {
+  width: 100%;
+  padding: 10px 98px 10px 14px;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  background: #111827;
+  color: #e2e8f0;
+  font-size: 14px;
+  font-weight: 600;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gw-search-input::placeholder {
+  color: #64748b;
+}
+
+.gw-search-input:focus {
+  outline: none;
+  border-color: #01d099;
+  box-shadow: 0 0 0 3px rgba(1, 208, 153, 0.18);
+}
+
+.gw-search-clear {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 999px;
+  background: rgba(1, 208, 153, 0.16);
+  color: #cbd5e1;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.gw-search-clear:hover {
+  background: rgba(1, 208, 153, 0.28);
+  color: #ffffff;
+}
+
 .gw-league {
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 
 .gw-league-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
+  gap: 10px;
+  padding: 10px 12px;
   background: #1a2744;
-  font-weight: 600;
-  font-size: 12px;
+  font-weight: 700;
+  font-size: 14px;
   color: #94a3b8;
   border-left: 3px solid #01d099;
 }
 
 .gw-flag {
-  width: 16px;
-  height: 12px;
+  width: 20px;
+  height: 14px;
   object-fit: cover;
   border-radius: 1px;
 }
 
 .gw-match {
   display: grid;
-  grid-template-columns: 50px 1fr 36px 36px;
+  grid-template-columns: 68px 1fr 52px 52px;
   align-items: center;
-  padding: 6px 10px;
+  padding: 11px 12px;
   border-bottom: 1px solid #1e293b;
   cursor: pointer;
   transition: background 0.15s;
@@ -83,10 +139,10 @@
 }
 
 .gw-status {
-  font-size: 12px;
+  font-size: 14px;
   text-align: center;
   color: #64748b;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .gw-status.gw-live {
@@ -110,23 +166,24 @@
 .gw-teams {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 5px;
   min-width: 0;
 }
 
 .gw-team {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 9px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 13px;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .gw-logo {
-  width: 16px;
-  height: 16px;
+  width: 22px;
+  height: 22px;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -135,9 +192,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-weight: 700;
-  font-size: 13px;
-  gap: 2px;
+  font-weight: 800;
+  font-size: 18px;
+  gap: 3px;
 }
 
 .gw-score.gw-live {
@@ -148,16 +205,33 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 11px;
+  font-size: 13px;
   color: #64748b;
-  gap: 2px;
+  gap: 3px;
 }
 
 @media (max-width: 480px) {
-  .gw-match {
-    grid-template-columns: 42px 1fr 30px 30px;
-    padding: 5px 6px;
+  .gw-toolbar {
+    align-items: stretch;
   }
-  .gw-team { font-size: 12px; }
-  .gw-filter-btn { padding: 4px 10px; font-size: 11px; }
+
+  .gw-filter-group {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .gw-search-wrap {
+    width: 100%;
+  }
+
+  .gw-match {
+    grid-template-columns: 54px 1fr 42px 42px;
+    padding: 8px 8px;
+  }
+  .gw-team { font-size: 14px; }
+  .gw-filter-btn { padding: 6px 12px; font-size: 12px; }
+  .gw-search-input { font-size: 13px; padding-right: 90px; }
+  .gw-search-clear { font-size: 11px; padding: 4px 8px; }
+  .gw-logo { width: 18px; height: 18px; }
+  .gw-score { font-size: 16px; }
 }

@@ -1,18 +1,18 @@
 {
   "fixture": {
-    "id": 1379297,
-    "referee": "T. Kirk",
+    "id": 1489003,
+    "referee": null,
     "timezone": "UTC",
-    "date": "2026-04-19T13:00:00+00:00",
-    "timestamp": 1776603600,
+    "date": "2026-05-29T07:00:00+00:00",
+    "timestamp": 1780038000,
     "periods": {
       "first": null,
       "second": null
     },
     "venue": {
-      "id": 566,
-      "name": "City Ground",
-      "city": "Nottingham"
+      "id": null,
+      "name": null,
+      "city": null
     },
     "status": {
       "long": "Not Started",
@@ -22,26 +22,26 @@
     }
   },
   "league": {
-    "id": 39,
-    "name": "Premier League",
-    "country": "England",
-    "logo": "https://media.api-sports.io/football/leagues/39.png",
-    "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+    "id": 178,
+    "name": "Third League - Southwest",
+    "country": "Bulgaria",
+    "logo": "https://media.api-sports.io/football/leagues/178.png",
+    "flag": "https://media.api-sports.io/flags/bg.svg",
     "season": 2025,
-    "round": "Regular Season - 33",
+    "round": "Southwest - 34",
     "standings": true
   },
   "teams": {
     "home": {
-      "id": 65,
-      "name": "Nottingham Forest",
-      "logo": "https://media.api-sports.io/football/teams/65.png",
+      "id": 19831,
+      "name": "Levski Sofia II",
+      "logo": "https://media.api-sports.io/football/teams/19831.png",
       "winner": null
     },
     "away": {
-      "id": 44,
-      "name": "Burnley",
-      "logo": "https://media.api-sports.io/football/teams/44.png",
+      "id": 17314,
+      "name": "Septemvri Sofia II",
+      "logo": "https://media.api-sports.io/football/teams/17314.png",
       "winner": null
     }
   },

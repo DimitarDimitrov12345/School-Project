@@ -11,6 +11,7 @@ type AuthState = {
   loading: boolean
   signUp: (email: string, password: string, username?: string, role?: 'user' | 'admin') => Promise<{ error: Error | null }>
   signIn: (identifier: string, password: string) => Promise<{ error: Error | null }>
+  updateProfile: (updates: { username?: string }) => Promise<{ error: Error | null }>
   signOut: () => Promise<void>
 }
 
@@ -70,13 +71,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return { error: new Error('Този имейл вече е регистриран') }
     }
 
-    // Check if username is already taken
-    if (username) {
+    const nextUsername = username?.trim()
+
+    // Check if username is already taken (case-insensitive)
+    if (nextUsername) {
       const { data: existingUsername } = await supabase
         .from('profiles')
         .select('id')
-        .eq('username', username)
-        .single()
+        .ilike('username', nextUsername)
+        .limit(1)
+        .maybeSingle()
       if (existingUsername) {
         return { error: new Error('Това потребителско име вече е заето') }
       }
@@ -87,7 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { username: username || email.split('@')[0], role, password_hash } }
+      options: { data: { username: nextUsername || email.split('@')[0], role, password_hash } }
     })
     try {
       const user = data?.user
@@ -95,7 +99,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         await supabase.from('profiles').upsert({
           id: user.id,
           email: user.email,
-          username: username || email.split('@')[0],
+          username: nextUsername || email.split('@')[0],
           password_hash,
           role
         }, { onConflict: 'id' })
@@ -127,6 +131,57 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  const updateProfile = async (updates: { username?: string }) => {
+    if (!isSupabaseConfigured) {
+      return { error: new Error('Supabase not configured. Copy .env.example to .env and add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.') }
+    }
+
+    if (!user) {
+      return { error: new Error('Няма активен потребител') }
+    }
+
+    try {
+      const nextUsername = updates.username?.trim()
+
+      if (nextUsername) {
+        const { data: existingUsername } = await supabase
+          .from('profiles')
+          .select('id')
+          .ilike('username', nextUsername)
+          .neq('id', user.id)
+          .limit(1)
+          .maybeSingle()
+
+        if (existingUsername) {
+          return { error: new Error('Това потребителско име вече е заето') }
+        }
+      }
+
+      const profileUpdates: Partial<Profile> = {}
+      if (nextUsername) profileUpdates.username = nextUsername
+
+      if (Object.keys(profileUpdates).length === 0) {
+        return { error: null }
+      }
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .update(profileUpdates)
+        .eq('id', user.id)
+        .select('*')
+        .single()
+
+      if (error) {
+        return { error }
+      }
+
+      setProfile(data as Profile)
+      return { error: null }
+    } catch (e: any) {
+      return { error: e instanceof Error ? e : new Error('Неуспешно обновяване на профила') }
+    }
+  }
+
   const signOut = async () => {
     if (isSupabaseConfigured) await supabase.auth.signOut()
     setProfile(null)
@@ -139,6 +194,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     loading,
     signUp,
     signIn,
+    updateProfile,
     signOut,
   }
 

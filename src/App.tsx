@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -19,9 +19,12 @@ import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
 import DownloadsPage from './pages/DownloadsPage'
 import GameDetailsPage from './pages/GameDetailsPage'
+import ProfilePage from './pages/ProfilePage'
+import PredictionsGamePage from './pages/PredictionsGamePage'
 import ProtectedAdminRoute from './components/ProtectedAdminRoute'
 import PrivacyPage from './pages/PrivacyPage'
 import TermsPage from './pages/TermsPage'
+import NotFoundPage from './pages/NotFoundPage'
 import { AuthProvider } from './contexts/AuthContext'
 import { ADMIN_LOGIN_PATH, ADMIN_DASHBOARD_PATH } from './config/admin'
 
@@ -77,6 +80,8 @@ function App() {
           <Route path="/signup" element={<MainLayout showSignUp />} />
           <Route path="/download-fixtures" element={<DownloadsPage />} />
           <Route path="/game/:fixtureId" element={<GameDetailsPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/predictions-game" element={<PredictionsGamePage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path={ADMIN_LOGIN_PATH} element={<AdminLogin />} />
@@ -88,7 +93,7 @@ function App() {
               </ProtectedAdminRoute>
             }
           />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

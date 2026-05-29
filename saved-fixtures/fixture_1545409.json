@@ -1,18 +1,18 @@
 {
   "fixture": {
-    "id": 1379289,
-    "referee": "S. Barrott",
+    "id": 1545409,
+    "referee": "R. Buquet",
     "timezone": "UTC",
-    "date": "2026-04-19T13:00:00+00:00",
-    "timestamp": 1776603600,
+    "date": "2026-05-29T18:45:00+00:00",
+    "timestamp": 1780080300,
     "periods": {
       "first": null,
       "second": null
     },
     "venue": {
-      "id": 495,
-      "name": "Villa Park",
-      "city": "Birmingham"
+      "id": 663,
+      "name": "Allianz Riviera",
+      "city": "Nice"
     },
     "status": {
       "long": "Not Started",
@@ -22,26 +22,26 @@
     }
   },
   "league": {
-    "id": 39,
-    "name": "Premier League",
-    "country": "England",
-    "logo": "https://media.api-sports.io/football/leagues/39.png",
-    "flag": "https://media.api-sports.io/flags/gb-eng.svg",
+    "id": 61,
+    "name": "Ligue 1",
+    "country": "France",
+    "logo": "https://media.api-sports.io/football/leagues/61.png",
+    "flag": "https://media.api-sports.io/flags/fr.svg",
     "season": 2025,
-    "round": "Regular Season - 33",
+    "round": "Final",
     "standings": true
   },
   "teams": {
     "home": {
-      "id": 66,
-      "name": "Aston Villa",
-      "logo": "https://media.api-sports.io/football/teams/66.png",
+      "id": 84,
+      "name": "Nice",
+      "logo": "https://media.api-sports.io/football/teams/84.png",
       "winner": null
     },
     "away": {
-      "id": 746,
-      "name": "Sunderland",
-      "logo": "https://media.api-sports.io/football/teams/746.png",
+      "id": 1063,
+      "name": "Saint Etienne",
+      "logo": "https://media.api-sports.io/football/teams/1063.png",
       "winner": null
     }
   },

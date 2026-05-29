@@ -1,9 +1,9 @@
-:root{ --right-width:340px; --sidebar-width: 280px; --content-width:720px }
+:root{ --right-width:350px; --sidebar-width: 0px; --content-width:820px }
 
 .app.layout{ display:flex; flex-direction:column; min-height:100vh; padding-bottom:60px; }
 
-.main{ display:grid; grid-template-columns: var(--sidebar-width) minmax(0, 1fr) var(--right-width); gap:0; flex:1; width:100%; min-height:0 }
-.main.sidebar-closed{ grid-template-columns: 0 minmax(0, 1fr) var(--right-width) }
+.main{ display:grid; grid-template-columns: minmax(0, 1fr) var(--right-width); gap:0; flex:1; width:100%; min-height:0 }
+.main.sidebar-closed{ grid-template-columns: minmax(0, 1fr) var(--right-width) }
 
 .sidebar{
   width:var(--sidebar-width);
@@ -25,6 +25,7 @@
   flex-shrink:0;
   z-index:200;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease;
+  display: none;
 }
 .sidebar.closed{
   width: 0;
@@ -61,7 +62,7 @@
 .rightpane{
   background: var(--bg-secondary);
   border-left:1px solid rgba(203, 213, 225, 0.1);
-  padding:12px;
+  padding:16px;
   height: calc(100vh - var(--nav-height, 48px));
   position:sticky;
   top:var(--nav-height, 48px);
@@ -76,8 +77,8 @@
 .rightpane-inner{ color:var(--text-secondary); font-size:0.95rem }
 
 @media (max-width: 1100px){
-  .main{ grid-template-columns: var(--sidebar-width) 1fr; }
-  .main.sidebar-closed{ grid-template-columns: 0 1fr; }
+  .main{ grid-template-columns: 1fr; }
+  .main.sidebar-closed{ grid-template-columns: 1fr; }
   .rightpane{ display:none }
 }
 

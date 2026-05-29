@@ -1,0 +1,74 @@
+{
+  "fixture": {
+    "id": 1524632,
+    "referee": null,
+    "timezone": "UTC",
+    "date": "2026-05-29T00:00:00+00:00",
+    "timestamp": 1780012800,
+    "periods": {
+      "first": 1780012800,
+      "second": 1780016400
+    },
+    "venue": {
+      "id": null,
+      "name": null,
+      "city": null
+    },
+    "status": {
+      "long": "Match Finished",
+      "short": "FT",
+      "elapsed": 90,
+      "extra": null
+    }
+  },
+  "league": {
+    "id": 256,
+    "name": "USL League Two",
+    "country": "USA",
+    "logo": "https://media.api-sports.io/football/leagues/256.png",
+    "flag": "https://media.api-sports.io/flags/us.svg",
+    "season": 2026,
+    "round": "Group Stage",
+    "standings": false
+  },
+  "teams": {
+    "home": {
+      "id": 27515,
+      "name": "Edgewater Castle",
+      "logo": "https://media.api-sports.io/football/teams/27515.png",
+      "winner": false
+    },
+    "away": {
+      "id": 23123,
+      "name": "Sueno",
+      "logo": "https://media.api-sports.io/football/teams/23123.png",
+      "winner": true
+    }
+  },
+  "goals": {
+    "home": 1,
+    "away": 4
+  },
+  "score": {
+    "halftime": {
+      "home": 0,
+      "away": 3
+    },
+    "fulltime": {
+      "home": 1,
+      "away": 4
+    },
+    "extratime": {
+      "home": null,
+      "away": null
+    },
+    "penalty": {
+      "home": null,
+      "away": null
+    }
+  },
+  "events": [],
+  "lineups": [],
+  "statistics": [],
+  "players": []
+}

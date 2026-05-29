@@ -6,16 +6,16 @@
   /* === UNIFIED DARK THEME PALETTE === */
   
   /* Primary Backgrounds - Midnight to Dark Gray */
-  --bg-primary: #111827;            /* Midnight */
-  --bg-secondary: #1f2937;          /* Dark Gray */
-  --bg-tertiary: #374151;           /* Darker Gray */
-  --bg-hover: #4b5563;              /* Hover state */
+  --bg-primary: #0b1220;            /* Midnight */
+  --bg-secondary: #151f2d;          /* Dark Gray */
+  --bg-tertiary: #243246;           /* Darker Gray */
+  --bg-hover: #334155;              /* Hover state */
   
   /* Schedule Section - Consistent dark theme */
-  --schedule-bg: #111827;           /* Midnight */
-  --schedule-card: #1f2937;         /* Dark Gray */
-  --schedule-card-hover: #2d3748;   /* Slightly lighter for hover */
-  --schedule-border: #374151;       /* Darker Gray border */
+  --schedule-bg: #0b1220;           /* Midnight */
+  --schedule-card: #151f2d;         /* Dark Gray */
+  --schedule-card-hover: #1f2b3b;   /* Slightly lighter for hover */
+  --schedule-border: #243246;       /* Darker Gray border */
   
   /* League Headers - Green accent */
   --league-header-bg: #1f2937;      /* Dark Gray */
@@ -25,7 +25,7 @@
   --league-accent-2: #ef4444;       /* Red */
   
   /* Tab Navigation */
-  --tab-inactive-bg: #1f2937;       /* Dark Gray */
+  --tab-inactive-bg: #151f2d;       /* Dark Gray */
   --tab-inactive-text: #9ca3af;     /* Muted */
   --tab-active-bg: #22c55e;         /* Green */
   --tab-active-border: #22c55e;     /* Green */
@@ -55,8 +55,8 @@
   /* UI Elements */
   --btn-primary: #3b82f6;           /* Blue */
   --btn-primary-hover: #2563eb;     /* Darker Blue */
-  --btn-secondary: #374151;         /* Darker Gray */
-  --btn-secondary-hover: #4b5563;   /* Hover Gray */
+  --btn-secondary: #243246;         /* Darker Gray */
+  --btn-secondary-hover: #334155;   /* Hover Gray */
   --accent-blue: #3b82f6;           /* Blue (backward compatibility) */
   
   /* Event Status Indicators */
@@ -66,8 +66,8 @@
   --event-sub: #3b82f6;             /* Blue */
   
   /* Legacy/Shorthand Variables (backward compatibility) */
-  --card: #1f2937;                  /* Card background (dark gray) */
-  --border: #374151;                /* Border color (darker gray) */
+  --card: #151f2d;                  /* Card background (dark gray) */
+  --border: #243246;                /* Border color (darker gray) */
   --text: #f9fafb;                  /* Text primary (light white) */
 
   color-scheme: dark;

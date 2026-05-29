@@ -358,3 +358,41 @@
   .brand-name { font-size: 0.85rem; }
   .user-name { display: none; }
 }
+
+@media (max-width: 920px) {
+  .top-nav {
+    height: auto;
+    min-height: var(--nav-height);
+    padding: 8px 10px;
+    flex-wrap: wrap;
+  }
+
+  .top-nav .right {
+    margin-left: auto;
+    gap: 8px;
+  }
+
+  .profile-section {
+    gap: 6px;
+  }
+
+  .profile-btn {
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 560px) {
+  .profile-menu {
+    right: 0;
+    min-width: min(86vw, 240px);
+  }
+
+  .menu-item {
+    font-size: 0.86rem;
+    padding: 9px 12px;
+  }
+
+  .auth-buttons {
+    gap: 6px;
+  }
+}
